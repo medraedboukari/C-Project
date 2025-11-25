@@ -51,11 +51,6 @@ create_raed_manage_coach (void)
   GtkWidget *spinbuttonyear;
   GtkWidget *label90;
   GtkWidget *label88;
-  GtkWidget *btdelete;
-  GtkWidget *alignment8;
-  GtkWidget *hbox8;
-  GtkWidget *image8;
-  GtkWidget *label176;
   GtkWidget *btsearch;
   GtkWidget *alignment9;
   GtkWidget *hbox9;
@@ -91,6 +86,11 @@ create_raed_manage_coach (void)
   GtkWidget *hbox6;
   GtkWidget *image6;
   GtkWidget *label174;
+  GtkWidget *btdelete;
+  GtkWidget *alignment8;
+  GtkWidget *hbox8;
+  GtkWidget *image8;
+  GtkWidget *label176;
 
   raed_manage_coach = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_window_set_title (GTK_WINDOW (raed_manage_coach), _("raed_manage_coach"));
@@ -195,27 +195,6 @@ create_raed_manage_coach (void)
   gtk_widget_show (label88);
   gtk_fixed_put (GTK_FIXED (fixed13), label88, 0, 384);
   gtk_widget_set_size_request (label88, 272, 48);
-
-  btdelete = gtk_button_new ();
-  gtk_widget_show (btdelete);
-  gtk_fixed_put (GTK_FIXED (fixed13), btdelete, 688, 272);
-  gtk_widget_set_size_request (btdelete, 112, 32);
-
-  alignment8 = gtk_alignment_new (0.5, 0.5, 0, 0);
-  gtk_widget_show (alignment8);
-  gtk_container_add (GTK_CONTAINER (btdelete), alignment8);
-
-  hbox8 = gtk_hbox_new (FALSE, 2);
-  gtk_widget_show (hbox8);
-  gtk_container_add (GTK_CONTAINER (alignment8), hbox8);
-
-  image8 = gtk_image_new_from_stock ("gtk-delete", GTK_ICON_SIZE_BUTTON);
-  gtk_widget_show (image8);
-  gtk_box_pack_start (GTK_BOX (hbox8), image8, FALSE, FALSE, 0);
-
-  label176 = gtk_label_new_with_mnemonic (_("DELETE"));
-  gtk_widget_show (label176);
-  gtk_box_pack_start (GTK_BOX (hbox8), label176, FALSE, FALSE, 0);
 
   btsearch = gtk_button_new ();
   gtk_widget_show (btsearch);
@@ -387,6 +366,27 @@ create_raed_manage_coach (void)
   gtk_widget_show (label174);
   gtk_box_pack_start (GTK_BOX (hbox6), label174, FALSE, FALSE, 0);
 
+  btdelete = gtk_button_new ();
+  gtk_widget_show (btdelete);
+  gtk_fixed_put (GTK_FIXED (fixed13), btdelete, 688, 272);
+  gtk_widget_set_size_request (btdelete, 112, 32);
+
+  alignment8 = gtk_alignment_new (0.5, 0.5, 0, 0);
+  gtk_widget_show (alignment8);
+  gtk_container_add (GTK_CONTAINER (btdelete), alignment8);
+
+  hbox8 = gtk_hbox_new (FALSE, 2);
+  gtk_widget_show (hbox8);
+  gtk_container_add (GTK_CONTAINER (alignment8), hbox8);
+
+  image8 = gtk_image_new_from_stock ("gtk-delete", GTK_ICON_SIZE_BUTTON);
+  gtk_widget_show (image8);
+  gtk_box_pack_start (GTK_BOX (hbox8), image8, FALSE, FALSE, 0);
+
+  label176 = gtk_label_new_with_mnemonic (_("DELETE"));
+  gtk_widget_show (label176);
+  gtk_box_pack_start (GTK_BOX (hbox8), label176, FALSE, FALSE, 0);
+
   g_signal_connect ((gpointer) radiobuttonman, "toggled",
                     G_CALLBACK (on_radiobuttonman_toggled),
                     NULL);
@@ -398,6 +398,9 @@ create_raed_manage_coach (void)
                     NULL);
   g_signal_connect ((gpointer) btmodify, "clicked",
                     G_CALLBACK (on_btmodify_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) btdelete, "clicked",
+                    G_CALLBACK (on_btdelete_clicked),
                     NULL);
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
@@ -420,11 +423,6 @@ create_raed_manage_coach (void)
   GLADE_HOOKUP_OBJECT (raed_manage_coach, spinbuttonyear, "spinbuttonyear");
   GLADE_HOOKUP_OBJECT (raed_manage_coach, label90, "label90");
   GLADE_HOOKUP_OBJECT (raed_manage_coach, label88, "label88");
-  GLADE_HOOKUP_OBJECT (raed_manage_coach, btdelete, "btdelete");
-  GLADE_HOOKUP_OBJECT (raed_manage_coach, alignment8, "alignment8");
-  GLADE_HOOKUP_OBJECT (raed_manage_coach, hbox8, "hbox8");
-  GLADE_HOOKUP_OBJECT (raed_manage_coach, image8, "image8");
-  GLADE_HOOKUP_OBJECT (raed_manage_coach, label176, "label176");
   GLADE_HOOKUP_OBJECT (raed_manage_coach, btsearch, "btsearch");
   GLADE_HOOKUP_OBJECT (raed_manage_coach, alignment9, "alignment9");
   GLADE_HOOKUP_OBJECT (raed_manage_coach, hbox9, "hbox9");
@@ -459,6 +457,11 @@ create_raed_manage_coach (void)
   GLADE_HOOKUP_OBJECT (raed_manage_coach, hbox6, "hbox6");
   GLADE_HOOKUP_OBJECT (raed_manage_coach, image6, "image6");
   GLADE_HOOKUP_OBJECT (raed_manage_coach, label174, "label174");
+  GLADE_HOOKUP_OBJECT (raed_manage_coach, btdelete, "btdelete");
+  GLADE_HOOKUP_OBJECT (raed_manage_coach, alignment8, "alignment8");
+  GLADE_HOOKUP_OBJECT (raed_manage_coach, hbox8, "hbox8");
+  GLADE_HOOKUP_OBJECT (raed_manage_coach, image8, "image8");
+  GLADE_HOOKUP_OBJECT (raed_manage_coach, label176, "label176");
 
   return raed_manage_coach;
 }

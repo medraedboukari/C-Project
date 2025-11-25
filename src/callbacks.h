@@ -10,6 +10,9 @@ void on_btadd_clicked(GtkButton *button, gpointer user_data);
 // MODIFY COACH
 void on_btmodify_clicked(GtkButton *button, gpointer user_data);
 
+// DELETE COACH
+void on_btdelete_clicked(GtkButton *button, gpointer user_data);
+
 // RADIO BUTTONS
 void on_radiobuttonman_toggled(GtkToggleButton *togglebutton, gpointer user_data);
 void on_radiobuttonwomen_toggled(GtkToggleButton *togglebutton, gpointer user_data);

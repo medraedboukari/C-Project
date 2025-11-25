@@ -51,11 +51,6 @@ create_raed_manage_coach (void)
   GtkWidget *spinbuttonyear;
   GtkWidget *label90;
   GtkWidget *label88;
-  GtkWidget *btmodify;
-  GtkWidget *alignment6;
-  GtkWidget *hbox6;
-  GtkWidget *image6;
-  GtkWidget *label174;
   GtkWidget *btdelete;
   GtkWidget *alignment8;
   GtkWidget *hbox8;
@@ -83,14 +78,19 @@ create_raed_manage_coach (void)
   GtkWidget *label101;
   GtkWidget *hseparator5;
   GtkWidget *label92;
+  GtkWidget *radiobuttonman;
+  GSList *radiobuttonman_group = NULL;
+  GtkWidget *radiobuttonwomen;
   GtkWidget *btadd;
   GtkWidget *alignment7;
   GtkWidget *hbox7;
   GtkWidget *image7;
   GtkWidget *label175;
-  GtkWidget *radiobuttonman;
-  GSList *radiobuttonman_group = NULL;
-  GtkWidget *radiobuttonwomen;
+  GtkWidget *btmodify;
+  GtkWidget *alignment6;
+  GtkWidget *hbox6;
+  GtkWidget *image6;
+  GtkWidget *label174;
 
   raed_manage_coach = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_window_set_title (GTK_WINDOW (raed_manage_coach), _("raed_manage_coach"));
@@ -195,27 +195,6 @@ create_raed_manage_coach (void)
   gtk_widget_show (label88);
   gtk_fixed_put (GTK_FIXED (fixed13), label88, 0, 384);
   gtk_widget_set_size_request (label88, 272, 48);
-
-  btmodify = gtk_button_new ();
-  gtk_widget_show (btmodify);
-  gtk_fixed_put (GTK_FIXED (fixed13), btmodify, 688, 600);
-  gtk_widget_set_size_request (btmodify, 112, 32);
-
-  alignment6 = gtk_alignment_new (0.5, 0.5, 0, 0);
-  gtk_widget_show (alignment6);
-  gtk_container_add (GTK_CONTAINER (btmodify), alignment6);
-
-  hbox6 = gtk_hbox_new (FALSE, 2);
-  gtk_widget_show (hbox6);
-  gtk_container_add (GTK_CONTAINER (alignment6), hbox6);
-
-  image6 = gtk_image_new_from_stock ("gtk-edit", GTK_ICON_SIZE_BUTTON);
-  gtk_widget_show (image6);
-  gtk_box_pack_start (GTK_BOX (hbox6), image6, FALSE, FALSE, 0);
-
-  label174 = gtk_label_new_with_mnemonic (_("MODIFY"));
-  gtk_widget_show (label174);
-  gtk_box_pack_start (GTK_BOX (hbox6), label174, FALSE, FALSE, 0);
 
   btdelete = gtk_button_new ();
   gtk_widget_show (btdelete);
@@ -352,6 +331,20 @@ create_raed_manage_coach (void)
   gtk_fixed_put (GTK_FIXED (fixed13), label92, 0, 80);
   gtk_widget_set_size_request (label92, 248, 48);
 
+  radiobuttonman = gtk_radio_button_new_with_mnemonic (NULL, _("Man"));
+  gtk_widget_show (radiobuttonman);
+  gtk_fixed_put (GTK_FIXED (fixed13), radiobuttonman, 384, 528);
+  gtk_widget_set_size_request (radiobuttonman, 116, 24);
+  gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobuttonman), radiobuttonman_group);
+  radiobuttonman_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobuttonman));
+
+  radiobuttonwomen = gtk_radio_button_new_with_mnemonic (NULL, _("Women"));
+  gtk_widget_show (radiobuttonwomen);
+  gtk_fixed_put (GTK_FIXED (fixed13), radiobuttonwomen, 472, 528);
+  gtk_widget_set_size_request (radiobuttonwomen, 116, 24);
+  gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobuttonwomen), radiobuttonman_group);
+  radiobuttonman_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobuttonwomen));
+
   btadd = gtk_button_new ();
   gtk_widget_show (btadd);
   gtk_fixed_put (GTK_FIXED (fixed13), btadd, 688, 496);
@@ -373,28 +366,38 @@ create_raed_manage_coach (void)
   gtk_widget_show (label175);
   gtk_box_pack_start (GTK_BOX (hbox7), label175, FALSE, FALSE, 0);
 
-  radiobuttonman = gtk_radio_button_new_with_mnemonic (NULL, _("Man"));
-  gtk_widget_show (radiobuttonman);
-  gtk_fixed_put (GTK_FIXED (fixed13), radiobuttonman, 384, 528);
-  gtk_widget_set_size_request (radiobuttonman, 116, 24);
-  gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobuttonman), radiobuttonman_group);
-  radiobuttonman_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobuttonman));
+  btmodify = gtk_button_new ();
+  gtk_widget_show (btmodify);
+  gtk_fixed_put (GTK_FIXED (fixed13), btmodify, 688, 600);
+  gtk_widget_set_size_request (btmodify, 112, 32);
 
-  radiobuttonwomen = gtk_radio_button_new_with_mnemonic (NULL, _("Women"));
-  gtk_widget_show (radiobuttonwomen);
-  gtk_fixed_put (GTK_FIXED (fixed13), radiobuttonwomen, 472, 528);
-  gtk_widget_set_size_request (radiobuttonwomen, 116, 24);
-  gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobuttonwomen), radiobuttonman_group);
-  radiobuttonman_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobuttonwomen));
+  alignment6 = gtk_alignment_new (0.5, 0.5, 0, 0);
+  gtk_widget_show (alignment6);
+  gtk_container_add (GTK_CONTAINER (btmodify), alignment6);
 
-  g_signal_connect ((gpointer) btadd, "clicked",
-                    G_CALLBACK (on_btadd_clicked),
-                    NULL);
+  hbox6 = gtk_hbox_new (FALSE, 2);
+  gtk_widget_show (hbox6);
+  gtk_container_add (GTK_CONTAINER (alignment6), hbox6);
+
+  image6 = gtk_image_new_from_stock ("gtk-edit", GTK_ICON_SIZE_BUTTON);
+  gtk_widget_show (image6);
+  gtk_box_pack_start (GTK_BOX (hbox6), image6, FALSE, FALSE, 0);
+
+  label174 = gtk_label_new_with_mnemonic (_("MODIFY"));
+  gtk_widget_show (label174);
+  gtk_box_pack_start (GTK_BOX (hbox6), label174, FALSE, FALSE, 0);
+
   g_signal_connect ((gpointer) radiobuttonman, "toggled",
                     G_CALLBACK (on_radiobuttonman_toggled),
                     NULL);
   g_signal_connect ((gpointer) radiobuttonwomen, "toggled",
                     G_CALLBACK (on_radiobuttonwomen_toggled),
+                    NULL);
+  g_signal_connect ((gpointer) btadd, "clicked",
+                    G_CALLBACK (on_btadd_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) btmodify, "clicked",
+                    G_CALLBACK (on_btmodify_clicked),
                     NULL);
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
@@ -417,11 +420,6 @@ create_raed_manage_coach (void)
   GLADE_HOOKUP_OBJECT (raed_manage_coach, spinbuttonyear, "spinbuttonyear");
   GLADE_HOOKUP_OBJECT (raed_manage_coach, label90, "label90");
   GLADE_HOOKUP_OBJECT (raed_manage_coach, label88, "label88");
-  GLADE_HOOKUP_OBJECT (raed_manage_coach, btmodify, "btmodify");
-  GLADE_HOOKUP_OBJECT (raed_manage_coach, alignment6, "alignment6");
-  GLADE_HOOKUP_OBJECT (raed_manage_coach, hbox6, "hbox6");
-  GLADE_HOOKUP_OBJECT (raed_manage_coach, image6, "image6");
-  GLADE_HOOKUP_OBJECT (raed_manage_coach, label174, "label174");
   GLADE_HOOKUP_OBJECT (raed_manage_coach, btdelete, "btdelete");
   GLADE_HOOKUP_OBJECT (raed_manage_coach, alignment8, "alignment8");
   GLADE_HOOKUP_OBJECT (raed_manage_coach, hbox8, "hbox8");
@@ -449,13 +447,18 @@ create_raed_manage_coach (void)
   GLADE_HOOKUP_OBJECT (raed_manage_coach, label101, "label101");
   GLADE_HOOKUP_OBJECT (raed_manage_coach, hseparator5, "hseparator5");
   GLADE_HOOKUP_OBJECT (raed_manage_coach, label92, "label92");
+  GLADE_HOOKUP_OBJECT (raed_manage_coach, radiobuttonman, "radiobuttonman");
+  GLADE_HOOKUP_OBJECT (raed_manage_coach, radiobuttonwomen, "radiobuttonwomen");
   GLADE_HOOKUP_OBJECT (raed_manage_coach, btadd, "btadd");
   GLADE_HOOKUP_OBJECT (raed_manage_coach, alignment7, "alignment7");
   GLADE_HOOKUP_OBJECT (raed_manage_coach, hbox7, "hbox7");
   GLADE_HOOKUP_OBJECT (raed_manage_coach, image7, "image7");
   GLADE_HOOKUP_OBJECT (raed_manage_coach, label175, "label175");
-  GLADE_HOOKUP_OBJECT (raed_manage_coach, radiobuttonman, "radiobuttonman");
-  GLADE_HOOKUP_OBJECT (raed_manage_coach, radiobuttonwomen, "radiobuttonwomen");
+  GLADE_HOOKUP_OBJECT (raed_manage_coach, btmodify, "btmodify");
+  GLADE_HOOKUP_OBJECT (raed_manage_coach, alignment6, "alignment6");
+  GLADE_HOOKUP_OBJECT (raed_manage_coach, hbox6, "hbox6");
+  GLADE_HOOKUP_OBJECT (raed_manage_coach, image6, "image6");
+  GLADE_HOOKUP_OBJECT (raed_manage_coach, label174, "label174");
 
   return raed_manage_coach;
 }
