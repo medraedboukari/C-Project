@@ -1,4 +1,3 @@
-
 #ifndef COACH_H_INCLUDED
 #define COACH_H_INCLUDED
 
@@ -28,21 +27,35 @@ typedef struct
     int gender; // 1 = Male, 2 = Female
 } Coach;
 
+// Structure pour l'assignation coach-cours
+typedef struct
+{
+    int coach_id;
+    char coach_name[50];
+    char coach_phone[20];
+    char course_id[10];
+    char course_name[50];
+    char course_center[30];
+    char course_time[20];
+    int day;
+    int month;
+    int year;
+} CoachAssignment;
+
 // ----------------------------
 //         PROTOTYPES
 // ----------------------------
 
-// Ajout d'un coach
+// Fonctions pour les coachs
 int addCoach(const char *filename, Coach c);
-
-// Modification d'un coach par ID
 int modifyCoach(const char *filename, int id, Coach updated);
-
-// Suppression d'un coach par ID
 int deleteCoach(const char *filename, int id);
-
-// Recherche d'un coach (nom + centre)
 Coach searchCoach(const char *filename, const char *lastName, const char *center);
 
-#endif // COACH_H_INCLUDED
+// Fonctions pour les assignations aux cours
+int assignCoachToCourse(const char *filename, CoachAssignment assignment);
+int isCoachAssigned(const char *filename, int coach_id, const char *course_id);
+int getCoachCountForCourse(const char *filename, const char *course_id, int capacity);
+void loadCourseAssignments(GtkTreeView *treeview, const char *filename);
 
+#endif // COACH_H_INCLUDED

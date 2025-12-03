@@ -480,7 +480,6 @@ create_raed_reserve_materiel (void)
 {
   GtkWidget *raed_reserve_materiel;
   GtkWidget *fixed19;
-  GtkWidget *label197;
   GtkWidget *entryid;
   GtkWidget *entryname;
   GtkWidget *entryphonenumber;
@@ -491,27 +490,19 @@ create_raed_reserve_materiel (void)
   GtkObject *spinbuttonyear_adj;
   GtkWidget *spinbuttonyear;
   GtkWidget *treeview13;
+  GtkWidget *hseparator13;
+  GtkWidget *label197;
+  GtkWidget *label204;
+  GtkWidget *label198;
   GtkWidget *label199;
   GtkWidget *label200;
-  GtkWidget *hseparator13;
-  GtkWidget *label198;
   GtkWidget *label202;
+  GtkWidget *label201;
   GtkWidget *button39;
   GtkWidget *alignment22;
   GtkWidget *hbox22;
   GtkWidget *image22;
   GtkWidget *label203;
-  GtkWidget *label201;
-  GtkWidget *treeview14;
-  GtkWidget *label204;
-  GtkWidget *label205;
-  GtkWidget *hseparator14;
-  GtkWidget *btreserve_;
-  GtkWidget *alignment23;
-  GtkWidget *hbox23;
-  GtkWidget *image23;
-  GtkWidget *label206;
-  GtkWidget *label207;
 
   raed_reserve_materiel = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_widget_set_size_request (raed_reserve_materiel, 900, 700);
@@ -522,81 +513,91 @@ create_raed_reserve_materiel (void)
   gtk_container_add (GTK_CONTAINER (raed_reserve_materiel), fixed19);
   gtk_widget_set_size_request (fixed19, 900, 700);
 
-  label197 = gtk_label_new (_("Hello\n "));
-  gtk_widget_show (label197);
-  gtk_fixed_put (GTK_FIXED (fixed19), label197, 296, 48);
-  gtk_widget_set_size_request (label197, 304, 40);
-
   entryid = gtk_entry_new ();
   gtk_widget_show (entryid);
-  gtk_fixed_put (GTK_FIXED (fixed19), entryid, 144, 168);
+  gtk_fixed_put (GTK_FIXED (fixed19), entryid, 168, 192);
   gtk_widget_set_size_request (entryid, 160, 27);
   gtk_entry_set_invisible_char (GTK_ENTRY (entryid), 8226);
 
   entryname = gtk_entry_new ();
   gtk_widget_show (entryname);
-  gtk_fixed_put (GTK_FIXED (fixed19), entryname, 144, 240);
+  gtk_fixed_put (GTK_FIXED (fixed19), entryname, 176, 280);
   gtk_widget_set_size_request (entryname, 160, 27);
   gtk_entry_set_invisible_char (GTK_ENTRY (entryname), 8226);
 
   entryphonenumber = gtk_entry_new ();
   gtk_widget_show (entryphonenumber);
-  gtk_fixed_put (GTK_FIXED (fixed19), entryphonenumber, 144, 328);
+  gtk_fixed_put (GTK_FIXED (fixed19), entryphonenumber, 184, 384);
   gtk_widget_set_size_request (entryphonenumber, 160, 27);
   gtk_entry_set_invisible_char (GTK_ENTRY (entryphonenumber), 8226);
 
-  spinbuttonday_adj = gtk_adjustment_new (0, 0, 100, 1, 10, 10);
+  spinbuttonday_adj = gtk_adjustment_new (1, 1, 31, 1, 10, 10);
   spinbuttonday = gtk_spin_button_new (GTK_ADJUSTMENT (spinbuttonday_adj), 1, 0);
   gtk_widget_show (spinbuttonday);
-  gtk_fixed_put (GTK_FIXED (fixed19), spinbuttonday, 152, 408);
+  gtk_fixed_put (GTK_FIXED (fixed19), spinbuttonday, 176, 488);
   gtk_widget_set_size_request (spinbuttonday, 60, 27);
 
-  spinbuttonmonth_adj = gtk_adjustment_new (1, 0, 100, 1, 10, 10);
+  spinbuttonmonth_adj = gtk_adjustment_new (1, 1, 12, 1, 10, 10);
   spinbuttonmonth = gtk_spin_button_new (GTK_ADJUSTMENT (spinbuttonmonth_adj), 1, 0);
   gtk_widget_show (spinbuttonmonth);
-  gtk_fixed_put (GTK_FIXED (fixed19), spinbuttonmonth, 224, 408);
+  gtk_fixed_put (GTK_FIXED (fixed19), spinbuttonmonth, 264, 488);
   gtk_widget_set_size_request (spinbuttonmonth, 60, 27);
 
-  spinbuttonyear_adj = gtk_adjustment_new (1, 0, 100, 1, 10, 10);
+  spinbuttonyear_adj = gtk_adjustment_new (1, 2000, 2100, 1, 10, 10);
   spinbuttonyear = gtk_spin_button_new (GTK_ADJUSTMENT (spinbuttonyear_adj), 1, 0);
   gtk_widget_show (spinbuttonyear);
-  gtk_fixed_put (GTK_FIXED (fixed19), spinbuttonyear, 296, 408);
-  gtk_widget_set_size_request (spinbuttonyear, 60, 27);
+  gtk_fixed_put (GTK_FIXED (fixed19), spinbuttonyear, 352, 488);
+  gtk_widget_set_size_request (spinbuttonyear, 80, 24);
 
   treeview13 = gtk_tree_view_new ();
   gtk_widget_show (treeview13);
-  gtk_fixed_put (GTK_FIXED (fixed19), treeview13, 440, 152);
+  gtk_fixed_put (GTK_FIXED (fixed19), treeview13, 432, 184);
   gtk_widget_set_size_request (treeview13, 424, 200);
+
+  hseparator13 = gtk_hseparator_new ();
+  gtk_widget_show (hseparator13);
+  gtk_fixed_put (GTK_FIXED (fixed19), hseparator13, 288, 104);
+  gtk_widget_set_size_request (hseparator13, 448, 24);
+
+  label197 = gtk_label_new (_("Hello\n "));
+  gtk_widget_show (label197);
+  gtk_fixed_put (GTK_FIXED (fixed19), label197, 280, 32);
+  gtk_widget_set_size_request (label197, 304, 40);
+
+  label204 = gtk_label_new (_("Choose Course "));
+  gtk_widget_show (label204);
+  gtk_fixed_put (GTK_FIXED (fixed19), label204, 0, 72);
+  gtk_widget_set_size_request (label204, 408, 80);
+
+  label198 = gtk_label_new (_("ID"));
+  gtk_widget_show (label198);
+  gtk_fixed_put (GTK_FIXED (fixed19), label198, 72, 192);
+  gtk_widget_set_size_request (label198, 80, 24);
 
   label199 = gtk_label_new (_("Name "));
   gtk_widget_show (label199);
-  gtk_fixed_put (GTK_FIXED (fixed19), label199, 72, 248);
+  gtk_fixed_put (GTK_FIXED (fixed19), label199, 88, 288);
   gtk_widget_set_size_request (label199, 57, 17);
 
   label200 = gtk_label_new (_("Phone Number "));
   gtk_widget_show (label200);
-  gtk_fixed_put (GTK_FIXED (fixed19), label200, 40, 328);
+  gtk_fixed_put (GTK_FIXED (fixed19), label200, 72, 384);
   gtk_widget_set_size_request (label200, 104, 24);
-
-  hseparator13 = gtk_hseparator_new ();
-  gtk_widget_show (hseparator13);
-  gtk_fixed_put (GTK_FIXED (fixed19), hseparator13, 288, 112);
-  gtk_widget_set_size_request (hseparator13, 448, 24);
-
-  label198 = gtk_label_new (_("ID"));
-  gtk_widget_show (label198);
-  gtk_fixed_put (GTK_FIXED (fixed19), label198, 64, 168);
-  gtk_widget_set_size_request (label198, 80, 24);
 
   label202 = gtk_label_new (_("Date of birth "));
   gtk_widget_show (label202);
-  gtk_fixed_put (GTK_FIXED (fixed19), label202, 32, 408);
+  gtk_fixed_put (GTK_FIXED (fixed19), label202, 40, 488);
   gtk_widget_set_size_request (label202, 104, 24);
+
+  label201 = gtk_label_new (_(";;;"));
+  gtk_widget_show (label201);
+  gtk_fixed_put (GTK_FIXED (fixed19), label201, 504, 584);
+  gtk_widget_set_size_request (label201, 232, 48);
 
   button39 = gtk_button_new ();
   gtk_widget_show (button39);
-  gtk_fixed_put (GTK_FIXED (fixed19), button39, 456, 392);
-  gtk_widget_set_size_request (button39, 128, 40);
+  gtk_fixed_put (GTK_FIXED (fixed19), button39, 536, 520);
+  gtk_widget_set_size_request (button39, 144, 48);
 
   alignment22 = gtk_alignment_new (0.5, 0.5, 0, 0);
   gtk_widget_show (alignment22);
@@ -614,61 +615,16 @@ create_raed_reserve_materiel (void)
   gtk_widget_show (label203);
   gtk_box_pack_start (GTK_BOX (hbox22), label203, FALSE, FALSE, 0);
 
-  label201 = gtk_label_new (_(";;;"));
-  gtk_widget_show (label201);
-  gtk_fixed_put (GTK_FIXED (fixed19), label201, 592, 384);
-  gtk_widget_set_size_request (label201, 232, 48);
-
-  treeview14 = gtk_tree_view_new ();
-  gtk_widget_show (treeview14);
-  gtk_fixed_put (GTK_FIXED (fixed19), treeview14, 448, 488);
-  gtk_widget_set_size_request (treeview14, 432, 200);
-
-  label204 = gtk_label_new (_("Choose Course "));
-  gtk_widget_show (label204);
-  gtk_fixed_put (GTK_FIXED (fixed19), label204, 0, 80);
-  gtk_widget_set_size_request (label204, 408, 80);
-
-  label205 = gtk_label_new (_("Reserve Material"));
-  gtk_widget_show (label205);
-  gtk_fixed_put (GTK_FIXED (fixed19), label205, 24, 472);
-  gtk_widget_set_size_request (label205, 168, 16);
-
-  hseparator14 = gtk_hseparator_new ();
-  gtk_widget_show (hseparator14);
-  gtk_fixed_put (GTK_FIXED (fixed19), hseparator14, 208, 472);
-  gtk_widget_set_size_request (hseparator14, 496, 16);
-
-  btreserve_ = gtk_button_new ();
-  gtk_widget_show (btreserve_);
-  gtk_fixed_put (GTK_FIXED (fixed19), btreserve_, 200, 592);
-  gtk_widget_set_size_request (btreserve_, 144, 40);
-
-  alignment23 = gtk_alignment_new (0.5, 0.5, 0, 0);
-  gtk_widget_show (alignment23);
-  gtk_container_add (GTK_CONTAINER (btreserve_), alignment23);
-
-  hbox23 = gtk_hbox_new (FALSE, 2);
-  gtk_widget_show (hbox23);
-  gtk_container_add (GTK_CONTAINER (alignment23), hbox23);
-
-  image23 = gtk_image_new_from_stock ("gtk-apply", GTK_ICON_SIZE_BUTTON);
-  gtk_widget_show (image23);
-  gtk_box_pack_start (GTK_BOX (hbox23), image23, FALSE, FALSE, 0);
-
-  label206 = gtk_label_new_with_mnemonic (_("Reserve"));
-  gtk_widget_show (label206);
-  gtk_box_pack_start (GTK_BOX (hbox23), label206, FALSE, FALSE, 0);
-
-  label207 = gtk_label_new (_(";;;"));
-  gtk_widget_show (label207);
-  gtk_fixed_put (GTK_FIXED (fixed19), label207, 248, 656);
-  gtk_widget_set_size_request (label207, 57, 17);
+  g_signal_connect ((gpointer) treeview13, "row_activated",
+                    G_CALLBACK (on_treeview13_row_activated),
+                    NULL);
+  g_signal_connect ((gpointer) button39, "clicked",
+                    G_CALLBACK (on_button39_clicked),
+                    NULL);
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
   GLADE_HOOKUP_OBJECT_NO_REF (raed_reserve_materiel, raed_reserve_materiel, "raed_reserve_materiel");
   GLADE_HOOKUP_OBJECT (raed_reserve_materiel, fixed19, "fixed19");
-  GLADE_HOOKUP_OBJECT (raed_reserve_materiel, label197, "label197");
   GLADE_HOOKUP_OBJECT (raed_reserve_materiel, entryid, "entryid");
   GLADE_HOOKUP_OBJECT (raed_reserve_materiel, entryname, "entryname");
   GLADE_HOOKUP_OBJECT (raed_reserve_materiel, entryphonenumber, "entryphonenumber");
@@ -676,27 +632,19 @@ create_raed_reserve_materiel (void)
   GLADE_HOOKUP_OBJECT (raed_reserve_materiel, spinbuttonmonth, "spinbuttonmonth");
   GLADE_HOOKUP_OBJECT (raed_reserve_materiel, spinbuttonyear, "spinbuttonyear");
   GLADE_HOOKUP_OBJECT (raed_reserve_materiel, treeview13, "treeview13");
+  GLADE_HOOKUP_OBJECT (raed_reserve_materiel, hseparator13, "hseparator13");
+  GLADE_HOOKUP_OBJECT (raed_reserve_materiel, label197, "label197");
+  GLADE_HOOKUP_OBJECT (raed_reserve_materiel, label204, "label204");
+  GLADE_HOOKUP_OBJECT (raed_reserve_materiel, label198, "label198");
   GLADE_HOOKUP_OBJECT (raed_reserve_materiel, label199, "label199");
   GLADE_HOOKUP_OBJECT (raed_reserve_materiel, label200, "label200");
-  GLADE_HOOKUP_OBJECT (raed_reserve_materiel, hseparator13, "hseparator13");
-  GLADE_HOOKUP_OBJECT (raed_reserve_materiel, label198, "label198");
   GLADE_HOOKUP_OBJECT (raed_reserve_materiel, label202, "label202");
+  GLADE_HOOKUP_OBJECT (raed_reserve_materiel, label201, "label201");
   GLADE_HOOKUP_OBJECT (raed_reserve_materiel, button39, "button39");
   GLADE_HOOKUP_OBJECT (raed_reserve_materiel, alignment22, "alignment22");
   GLADE_HOOKUP_OBJECT (raed_reserve_materiel, hbox22, "hbox22");
   GLADE_HOOKUP_OBJECT (raed_reserve_materiel, image22, "image22");
   GLADE_HOOKUP_OBJECT (raed_reserve_materiel, label203, "label203");
-  GLADE_HOOKUP_OBJECT (raed_reserve_materiel, label201, "label201");
-  GLADE_HOOKUP_OBJECT (raed_reserve_materiel, treeview14, "treeview14");
-  GLADE_HOOKUP_OBJECT (raed_reserve_materiel, label204, "label204");
-  GLADE_HOOKUP_OBJECT (raed_reserve_materiel, label205, "label205");
-  GLADE_HOOKUP_OBJECT (raed_reserve_materiel, hseparator14, "hseparator14");
-  GLADE_HOOKUP_OBJECT (raed_reserve_materiel, btreserve_, "btreserve_");
-  GLADE_HOOKUP_OBJECT (raed_reserve_materiel, alignment23, "alignment23");
-  GLADE_HOOKUP_OBJECT (raed_reserve_materiel, hbox23, "hbox23");
-  GLADE_HOOKUP_OBJECT (raed_reserve_materiel, image23, "image23");
-  GLADE_HOOKUP_OBJECT (raed_reserve_materiel, label206, "label206");
-  GLADE_HOOKUP_OBJECT (raed_reserve_materiel, label207, "label207");
 
   return raed_reserve_materiel;
 }

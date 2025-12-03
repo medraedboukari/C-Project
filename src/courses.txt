@@ -1,0 +1,6 @@
+ID Name Type Center Time Equipment Capacity
+C001 Yoga Group Wellness 09:00 Mats 20
+C002 Cardio Group Fitness 10:30 Treadmills 15
+C003 Swimming Group Aquatic 14:00 Pool 10
+C004 Boxing Individual Martial 18:30 Bags 8
+C005 Zumba Group Dance 19:00 Stereo 25

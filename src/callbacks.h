@@ -31,3 +31,17 @@ void on_refresh_clicked(GtkButton *button, gpointer user_data);
 
 #endif
 
+
+void
+on_treeview13_row_activated            (GtkTreeView     *treeview,
+                                        GtkTreePath     *path,
+                                        GtkTreeViewColumn *column,
+                                        gpointer         user_data);
+
+void
+on_button39_clicked                    (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_button40_clicked                    (GtkButton       *button,
+                                        gpointer         user_data);
