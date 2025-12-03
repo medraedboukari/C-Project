@@ -1,8 +1,15 @@
+
 #ifndef COACH_H_INCLUDED
 #define COACH_H_INCLUDED
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <gtk/gtk.h>
 
+// ----------------------------
+//          STRUCTURES
+// ----------------------------
 typedef struct
 {
     int day;
@@ -18,13 +25,24 @@ typedef struct
     Date dateOfBirth;
     char center[30];
     char phoneNumber[20];
-    char gender[10];
+    int gender; // 1 = Male, 2 = Female
 } Coach;
 
+// ----------------------------
+//         PROTOTYPES
+// ----------------------------
 
-int addCoach(char *filename, Coach c);
-int modifyCoach(char *filename, int id, Coach updated);
-int deleteCoach(char *filename, int id);
-Coach searchCoach(char *filename, int id);
+// Ajout d'un coach
+int addCoach(const char *filename, Coach c);
 
-#endif 
+// Modification d'un coach par ID
+int modifyCoach(const char *filename, int id, Coach updated);
+
+// Suppression d'un coach par ID
+int deleteCoach(const char *filename, int id);
+
+// Recherche d'un coach (nom + centre)
+Coach searchCoach(const char *filename, const char *lastName, const char *center);
+
+#endif // COACH_H_INCLUDED
+
