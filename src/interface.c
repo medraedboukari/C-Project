@@ -632,7 +632,7 @@ create_raed_reserve_materiel (void)
   return raed_reserve_materiel;
 }
 
-/*GtkWidget*
+GtkWidget*
 create_yassinemanagemembres (void)
 {
   GtkWidget *yassinemanagemembres;
@@ -998,7 +998,7 @@ create_yassinemanagemembres (void)
                     G_CALLBACK (on_btmodify_b_clicked),
                     NULL);
 
-
+  /* Store pointers to all widgets, for use by lookup_widget(). */
   GLADE_HOOKUP_OBJECT_NO_REF (yassinemanagemembres, yassinemanagemembres, "yassinemanagemembres");
   GLADE_HOOKUP_OBJECT (yassinemanagemembres, fixed20, "fixed20");
   GLADE_HOOKUP_OBJECT (yassinemanagemembres, treeview1_b, "treeview1_b");
@@ -1149,7 +1149,7 @@ create_yassinerequestcoach (void)
                     G_CALLBACK (on_btshoose_b_clicked),
                     NULL);
 
-
+  /* Store pointers to all widgets, for use by lookup_widget(). */
   GLADE_HOOKUP_OBJECT_NO_REF (yassinerequestcoach, yassinerequestcoach, "yassinerequestcoach");
   GLADE_HOOKUP_OBJECT (yassinerequestcoach, fixed21, "fixed21");
   GLADE_HOOKUP_OBJECT (yassinerequestcoach, treeview2_b, "treeview2_b");
@@ -1178,16 +1178,18 @@ create_yomna_choose_course (void)
   GtkWidget *label227;
   GtkWidget *hseparator17;
   GtkWidget *label230;
-  GtkWidget *loadcourses_y;
-  GtkWidget *alignment28;
-  GtkWidget *hbox28;
-  GtkWidget *image28;
-  GtkWidget *label228;
   GtkWidget *btchoose_y;
   GtkWidget *alignment29;
   GtkWidget *hbox29;
   GtkWidget *image29;
   GtkWidget *label229;
+  GtkWidget *loadcourses_y;
+  GtkWidget *alignment28;
+  GtkWidget *hbox28;
+  GtkWidget *image28;
+  GtkWidget *label228;
+  GtkWidget *entryid;
+  GtkWidget *label288;
 
   yomna_choose_course = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_window_set_title (GTK_WINDOW (yomna_choose_course), _("yomna_choose_course"));
@@ -1204,8 +1206,8 @@ create_yomna_choose_course (void)
 
   treeviewchoose_y = gtk_tree_view_new ();
   gtk_widget_show (treeviewchoose_y);
-  gtk_fixed_put (GTK_FIXED (fixed22), treeviewchoose_y, 160, 152);
-  gtk_widget_set_size_request (treeviewchoose_y, 568, 344);
+  gtk_fixed_put (GTK_FIXED (fixed22), treeviewchoose_y, 120, 224);
+  gtk_widget_set_size_request (treeviewchoose_y, 696, 336);
 
   label227 = gtk_label_new (_("Choose Course "));
   gtk_widget_show (label227);
@@ -1222,9 +1224,30 @@ create_yomna_choose_course (void)
   gtk_fixed_put (GTK_FIXED (fixed22), label230, 592, 576);
   gtk_widget_set_size_request (label230, 240, 80);
 
+  btchoose_y = gtk_button_new ();
+  gtk_widget_show (btchoose_y);
+  gtk_fixed_put (GTK_FIXED (fixed22), btchoose_y, 336, 624);
+  gtk_widget_set_size_request (btchoose_y, 224, 56);
+
+  alignment29 = gtk_alignment_new (0.5, 0.5, 0, 0);
+  gtk_widget_show (alignment29);
+  gtk_container_add (GTK_CONTAINER (btchoose_y), alignment29);
+
+  hbox29 = gtk_hbox_new (FALSE, 2);
+  gtk_widget_show (hbox29);
+  gtk_container_add (GTK_CONTAINER (alignment29), hbox29);
+
+  image29 = gtk_image_new_from_stock ("gtk-apply", GTK_ICON_SIZE_BUTTON);
+  gtk_widget_show (image29);
+  gtk_box_pack_start (GTK_BOX (hbox29), image29, FALSE, FALSE, 0);
+
+  label229 = gtk_label_new_with_mnemonic (_("choose "));
+  gtk_widget_show (label229);
+  gtk_box_pack_start (GTK_BOX (hbox29), label229, FALSE, FALSE, 0);
+
   loadcourses_y = gtk_button_new ();
   gtk_widget_show (loadcourses_y);
-  gtk_fixed_put (GTK_FIXED (fixed22), loadcourses_y, 392, 528);
+  gtk_fixed_put (GTK_FIXED (fixed22), loadcourses_y, 392, 584);
   gtk_widget_set_size_request (loadcourses_y, 114, 40);
 
   alignment28 = gtk_alignment_new (0.5, 0.5, 0, 0);
@@ -1243,38 +1266,28 @@ create_yomna_choose_course (void)
   gtk_widget_show (label228);
   gtk_box_pack_start (GTK_BOX (hbox28), label228, FALSE, FALSE, 0);
 
-  btchoose_y = gtk_button_new ();
-  gtk_widget_show (btchoose_y);
-  gtk_fixed_put (GTK_FIXED (fixed22), btchoose_y, 384, 576);
-  gtk_widget_set_size_request (btchoose_y, 136, 48);
+  entryid = gtk_entry_new ();
+  gtk_widget_show (entryid);
+  gtk_fixed_put (GTK_FIXED (fixed22), entryid, 376, 160);
+  gtk_widget_set_size_request (entryid, 104, 35);
+  gtk_entry_set_invisible_char (GTK_ENTRY (entryid), 8226);
 
-  alignment29 = gtk_alignment_new (0.5, 0.5, 0, 0);
-  gtk_widget_show (alignment29);
-  gtk_container_add (GTK_CONTAINER (btchoose_y), alignment29);
-
-  hbox29 = gtk_hbox_new (FALSE, 2);
-  gtk_widget_show (hbox29);
-  gtk_container_add (GTK_CONTAINER (alignment29), hbox29);
-
-  image29 = gtk_image_new_from_stock ("gtk-apply", GTK_ICON_SIZE_BUTTON);
-  gtk_widget_show (image29);
-  gtk_box_pack_start (GTK_BOX (hbox29), image29, FALSE, FALSE, 0);
-
-  label229 = gtk_label_new_with_mnemonic (_("choose "));
-  gtk_widget_show (label229);
-  gtk_box_pack_start (GTK_BOX (hbox29), label229, FALSE, FALSE, 0);
+  label288 = gtk_label_new (_("id member"));
+  gtk_widget_show (label288);
+  gtk_fixed_put (GTK_FIXED (fixed22), label288, 240, 160);
+  gtk_widget_set_size_request (label288, 168, 40);
 
   g_signal_connect ((gpointer) treeviewchoose_y, "row_activated",
                     G_CALLBACK (on_treeviewchoose_y_row_activated),
                     NULL);
-  g_signal_connect ((gpointer) loadcourses_y, "clicked",
-                    G_CALLBACK (on_loadcourses_y_clicked),
-                    NULL);
   g_signal_connect ((gpointer) btchoose_y, "clicked",
                     G_CALLBACK (on_btchoose_y_clicked),
                     NULL);
+  g_signal_connect ((gpointer) loadcourses_y, "clicked",
+                    G_CALLBACK (on_loadcourses_y_clicked),
+                    NULL);
 
-
+  /* Store pointers to all widgets, for use by lookup_widget(). */
   GLADE_HOOKUP_OBJECT_NO_REF (yomna_choose_course, yomna_choose_course, "yomna_choose_course");
   GLADE_HOOKUP_OBJECT (yomna_choose_course, fixed22, "fixed22");
   GLADE_HOOKUP_OBJECT (yomna_choose_course, label226, "label226");
@@ -1282,16 +1295,18 @@ create_yomna_choose_course (void)
   GLADE_HOOKUP_OBJECT (yomna_choose_course, label227, "label227");
   GLADE_HOOKUP_OBJECT (yomna_choose_course, hseparator17, "hseparator17");
   GLADE_HOOKUP_OBJECT (yomna_choose_course, label230, "label230");
-  GLADE_HOOKUP_OBJECT (yomna_choose_course, loadcourses_y, "loadcourses_y");
-  GLADE_HOOKUP_OBJECT (yomna_choose_course, alignment28, "alignment28");
-  GLADE_HOOKUP_OBJECT (yomna_choose_course, hbox28, "hbox28");
-  GLADE_HOOKUP_OBJECT (yomna_choose_course, image28, "image28");
-  GLADE_HOOKUP_OBJECT (yomna_choose_course, label228, "label228");
   GLADE_HOOKUP_OBJECT (yomna_choose_course, btchoose_y, "btchoose_y");
   GLADE_HOOKUP_OBJECT (yomna_choose_course, alignment29, "alignment29");
   GLADE_HOOKUP_OBJECT (yomna_choose_course, hbox29, "hbox29");
   GLADE_HOOKUP_OBJECT (yomna_choose_course, image29, "image29");
   GLADE_HOOKUP_OBJECT (yomna_choose_course, label229, "label229");
+  GLADE_HOOKUP_OBJECT (yomna_choose_course, loadcourses_y, "loadcourses_y");
+  GLADE_HOOKUP_OBJECT (yomna_choose_course, alignment28, "alignment28");
+  GLADE_HOOKUP_OBJECT (yomna_choose_course, hbox28, "hbox28");
+  GLADE_HOOKUP_OBJECT (yomna_choose_course, image28, "image28");
+  GLADE_HOOKUP_OBJECT (yomna_choose_course, label228, "label228");
+  GLADE_HOOKUP_OBJECT (yomna_choose_course, entryid, "entryid");
+  GLADE_HOOKUP_OBJECT (yomna_choose_course, label288, "label288");
 
   return yomna_choose_course;
 }
@@ -1367,12 +1382,12 @@ create_yomna_course_managment (void)
   GSList *radiobuttonnight_y_group = NULL;
   GtkWidget *radiobuttonTreadmill_y;
   GSList *radiobuttonTreadmill_y_group = NULL;
-  GtkWidget *radiobuttonbunchpress_y;
-  GSList *radiobuttonbunchpress_y_group = NULL;
   GtkWidget *radiobuttonsquatmachine_y;
   GSList *radiobuttonsquatmachine_y_group = NULL;
   GtkWidget *radiobuttonNo_y;
   GSList *radiobuttonNo_y_group = NULL;
+  GtkWidget *radiobuttonbunchpress_y;
+  GSList *radiobuttonbunchpress_y_group = NULL;
 
   yomna_course_managment = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_widget_set_size_request (yomna_course_managment, 900, 700);
@@ -1693,13 +1708,6 @@ create_yomna_course_managment (void)
   gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobuttonTreadmill_y), radiobuttonTreadmill_y_group);
   radiobuttonTreadmill_y_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobuttonTreadmill_y));
 
-  radiobuttonbunchpress_y = gtk_radio_button_new_with_mnemonic (NULL, _("Bunch press"));
-  gtk_widget_show (radiobuttonbunchpress_y);
-  gtk_fixed_put (GTK_FIXED (fixed23), radiobuttonbunchpress_y, 240, 624);
-  gtk_widget_set_size_request (radiobuttonbunchpress_y, 124, 24);
-  gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobuttonbunchpress_y), radiobuttonbunchpress_y_group);
-  radiobuttonbunchpress_y_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobuttonbunchpress_y));
-
   radiobuttonsquatmachine_y = gtk_radio_button_new_with_mnemonic (NULL, _("Squat machine "));
   gtk_widget_show (radiobuttonsquatmachine_y);
   gtk_fixed_put (GTK_FIXED (fixed23), radiobuttonsquatmachine_y, 376, 624);
@@ -1713,6 +1721,13 @@ create_yomna_course_managment (void)
   gtk_widget_set_size_request (radiobuttonNo_y, 168, 24);
   gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobuttonNo_y), radiobuttonNo_y_group);
   radiobuttonNo_y_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobuttonNo_y));
+
+  radiobuttonbunchpress_y = gtk_radio_button_new_with_mnemonic (NULL, _("Bunch press"));
+  gtk_widget_show (radiobuttonbunchpress_y);
+  gtk_fixed_put (GTK_FIXED (fixed23), radiobuttonbunchpress_y, 240, 624);
+  gtk_widget_set_size_request (radiobuttonbunchpress_y, 124, 24);
+  gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobuttonbunchpress_y), radiobuttonbunchpress_y_group);
+  radiobuttonbunchpress_y_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobuttonbunchpress_y));
 
   g_signal_connect ((gpointer) treeviewcourse_y, "row_activated",
                     G_CALLBACK (on_treeviewcourse_y_row_activated),
@@ -1744,17 +1759,17 @@ create_yomna_course_managment (void)
   g_signal_connect ((gpointer) radiobuttonTreadmill_y, "toggled",
                     G_CALLBACK (on_radiobuttonTreadmill_y_toggled),
                     NULL);
-  g_signal_connect ((gpointer) radiobuttonbunchpress_y, "toggled",
-                    G_CALLBACK (on_radiobuttonbunchpress_toggled),
-                    NULL);
   g_signal_connect ((gpointer) radiobuttonsquatmachine_y, "toggled",
                     G_CALLBACK (on_radiobuttonsquatmachine_y_toggled),
                     NULL);
   g_signal_connect ((gpointer) radiobuttonNo_y, "toggled",
                     G_CALLBACK (on_radiobuttonNo_y_toggled),
                     NULL);
+  g_signal_connect ((gpointer) radiobuttonbunchpress_y, "toggled",
+                    G_CALLBACK (on_radiobuttonbunchpress_y_toggled),
+                    NULL);
 
-
+  /* Store pointers to all widgets, for use by lookup_widget(). */
   GLADE_HOOKUP_OBJECT_NO_REF (yomna_course_managment, yomna_course_managment, "yomna_course_managment");
   GLADE_HOOKUP_OBJECT (yomna_course_managment, fixed23, "fixed23");
   GLADE_HOOKUP_OBJECT (yomna_course_managment, treeviewcourse_y, "treeviewcourse_y");
@@ -1817,9 +1832,9 @@ create_yomna_course_managment (void)
   GLADE_HOOKUP_OBJECT (yomna_course_managment, radiobuttonafternoon_y, "radiobuttonafternoon_y");
   GLADE_HOOKUP_OBJECT (yomna_course_managment, radiobuttonnight_y, "radiobuttonnight_y");
   GLADE_HOOKUP_OBJECT (yomna_course_managment, radiobuttonTreadmill_y, "radiobuttonTreadmill_y");
-  GLADE_HOOKUP_OBJECT (yomna_course_managment, radiobuttonbunchpress_y, "radiobuttonbunchpress_y");
   GLADE_HOOKUP_OBJECT (yomna_course_managment, radiobuttonsquatmachine_y, "radiobuttonsquatmachine_y");
   GLADE_HOOKUP_OBJECT (yomna_course_managment, radiobuttonNo_y, "radiobuttonNo_y");
+  GLADE_HOOKUP_OBJECT (yomna_course_managment, radiobuttonbunchpress_y, "radiobuttonbunchpress_y");
 
   return yomna_course_managment;
 }
@@ -2292,7 +2307,7 @@ create_windowadmin (void)
                     G_CALLBACK (on_buttonlogoutadmin_clicked),
                     NULL);
 
-
+  /* Store pointers to all widgets, for use by lookup_widget(). */
   GLADE_HOOKUP_OBJECT_NO_REF (windowadmin, windowadmin, "windowadmin");
   GLADE_HOOKUP_OBJECT (windowadmin, fixed24, "fixed24");
   GLADE_HOOKUP_OBJECT (windowadmin, label252, "label252");
@@ -2481,7 +2496,7 @@ create_login (void)
                     G_CALLBACK (on_buttoncancel_clicked),
                     NULL);
 
-
+  /* Store pointers to all widgets, for use by lookup_widget(). */
   GLADE_HOOKUP_OBJECT_NO_REF (login, login, "login");
   GLADE_HOOKUP_OBJECT (login, fixed25, "fixed25");
   GLADE_HOOKUP_OBJECT (login, entryiduser, "entryiduser");
@@ -2684,7 +2699,7 @@ create_windowtrainer (void)
                     G_CALLBACK (on_buttonlogouttrtainer_clicked),
                     NULL);
 
-
+  /* Store pointers to all widgets, for use by lookup_widget(). */
   GLADE_HOOKUP_OBJECT_NO_REF (windowtrainer, windowtrainer, "windowtrainer");
   GLADE_HOOKUP_OBJECT (windowtrainer, fixed26, "fixed26");
   GLADE_HOOKUP_OBJECT (windowtrainer, entryidequipmenttrainer, "entryidequipmenttrainer");
@@ -2776,7 +2791,7 @@ create_space_admin (void)
                     G_CALLBACK (on_btmanagememebers_clicked),
                     NULL);
 
-
+  /* Store pointers to all widgets, for use by lookup_widget(). */
   GLADE_HOOKUP_OBJECT_NO_REF (space_admin, space_admin, "space_admin");
   GLADE_HOOKUP_OBJECT (space_admin, fixed27, "fixed27");
   GLADE_HOOKUP_OBJECT (space_admin, btmanageequipement, "btmanageequipement");
@@ -2828,7 +2843,7 @@ create_space_coach (void)
                     G_CALLBACK (on_bttreserveequipement_a_clicked),
                     NULL);
 
-
+  /* Store pointers to all widgets, for use by lookup_widget(). */
   GLADE_HOOKUP_OBJECT_NO_REF (space_coach, space_coach, "space_coach");
   GLADE_HOOKUP_OBJECT (space_coach, fixed28, "fixed28");
   GLADE_HOOKUP_OBJECT (space_coach, label285, "label285");
@@ -2884,7 +2899,7 @@ create_space_members (void)
                     G_CALLBACK (on_btreserveprivatecoach_a_clicked),
                     NULL);
 
-
+  /* Store pointers to all widgets, for use by lookup_widget(). */
   GLADE_HOOKUP_OBJECT_NO_REF (space_members, space_members, "space_members");
   GLADE_HOOKUP_OBJECT (space_members, fixed29, "fixed29");
   GLADE_HOOKUP_OBJECT (space_members, label287, "label287");
@@ -2894,4 +2909,4 @@ create_space_members (void)
 
   return space_members;
 }
-*/
+

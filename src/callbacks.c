@@ -2922,3 +2922,11 @@ on_btchoose_clicked                    (GtkButton       *button,
 
 }*/
 
+
+void
+on_radiobuttonbunchpress_y_toggled     (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+
+}
+
