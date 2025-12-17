@@ -607,9 +607,6 @@ callbacks.o: callbacks.c /usr/include/stdc-predef.h \
  /usr/include/errno.h /usr/include/x86_64-linux-gnu/bits/errno.h \
  /usr/include/linux/errno.h /usr/include/x86_64-linux-gnu/asm/errno.h \
  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
- callbacks.h coach.h interface.h support.h ../config.h \
- /usr/include/libintl.h /usr/include/locale.h \
- /usr/include/x86_64-linux-gnu/bits/locale.h \
  /usr/include/x86_64-linux-gnu/curl/curl.h \
  /usr/include/x86_64-linux-gnu/curl/curlver.h \
  /usr/include/x86_64-linux-gnu/curl/system.h \
@@ -629,7 +626,10 @@ callbacks.o: callbacks.c /usr/include/stdc-predef.h \
  /usr/include/x86_64-linux-gnu/curl/multi.h \
  /usr/include/x86_64-linux-gnu/curl/curl.h \
  /usr/include/x86_64-linux-gnu/curl/urlapi.h \
- /usr/include/x86_64-linux-gnu/curl/typecheck-gcc.h
+ /usr/include/x86_64-linux-gnu/curl/typecheck-gcc.h callbacks.h \
+ equipment.h coach.h interface.h support.h ../config.h \
+ /usr/include/libintl.h /usr/include/locale.h \
+ /usr/include/x86_64-linux-gnu/bits/locale.h
 
 /usr/include/stdc-predef.h:
 
@@ -1983,22 +1983,6 @@ callbacks.o: callbacks.c /usr/include/stdc-predef.h \
 
 /usr/include/asm-generic/errno-base.h:
 
-callbacks.h:
-
-coach.h:
-
-interface.h:
-
-support.h:
-
-../config.h:
-
-/usr/include/libintl.h:
-
-/usr/include/locale.h:
-
-/usr/include/x86_64-linux-gnu/bits/locale.h:
-
 /usr/include/x86_64-linux-gnu/curl/curl.h:
 
 /usr/include/x86_64-linux-gnu/curl/curlver.h:
@@ -2038,3 +2022,21 @@ support.h:
 /usr/include/x86_64-linux-gnu/curl/urlapi.h:
 
 /usr/include/x86_64-linux-gnu/curl/typecheck-gcc.h:
+
+callbacks.h:
+
+equipment.h:
+
+coach.h:
+
+interface.h:
+
+support.h:
+
+../config.h:
+
+/usr/include/libintl.h:
+
+/usr/include/locale.h:
+
+/usr/include/x86_64-linux-gnu/bits/locale.h:

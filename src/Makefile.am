@@ -10,6 +10,7 @@ project1_SOURCES = \
 	support.c support.h \
 	interface.c interface.h \
 	callbacks.c callbacks.h \
-        coach.c     coach.h
+        coach.c     coach.h \
+        equipment.c equipment.h
 
 project1_LDADD = @PACKAGE_LIBS@ $(INTLLIBS) -lcurl

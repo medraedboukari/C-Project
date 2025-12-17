@@ -100,7 +100,8 @@ CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_project1_OBJECTS = main.$(OBJEXT) support.$(OBJEXT) \
-	interface.$(OBJEXT) callbacks.$(OBJEXT) coach.$(OBJEXT)
+	interface.$(OBJEXT) callbacks.$(OBJEXT) coach.$(OBJEXT) \
+	equipment.$(OBJEXT)
 project1_OBJECTS = $(am_project1_OBJECTS)
 am__DEPENDENCIES_1 =
 project1_DEPENDENCIES = $(am__DEPENDENCIES_1)
@@ -282,7 +283,8 @@ project1_SOURCES = \
 	support.c support.h \
 	interface.c interface.h \
 	callbacks.c callbacks.h \
-        coach.c     coach.h
+        coach.c     coach.h \
+        equipment.c equipment.h
 
 project1_LDADD = -lgtk-x11-2.0 -lgdk-x11-2.0 -lpangocairo-1.0 -latk-1.0 -lcairo -lgdk_pixbuf-2.0 -lgio-2.0 -lpangoft2-1.0 -lpango-1.0 -lgobject-2.0 -lglib-2.0 -lfontconfig -lfreetype $(INTLLIBS) -lcurl
 all: all-am
@@ -373,6 +375,7 @@ distclean-compile:
 
 include ./$(DEPDIR)/callbacks.Po
 include ./$(DEPDIR)/coach.Po
+include ./$(DEPDIR)/equipment.Po
 include ./$(DEPDIR)/interface.Po
 include ./$(DEPDIR)/main.Po
 include ./$(DEPDIR)/support.Po

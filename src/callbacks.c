@@ -3,12 +3,15 @@
 #include <string.h>
 #include <ctype.h>
 #include <errno.h>
+#include <time.h>
+#include <stdio.h>
+#include <curl/curl.h>
+
 #include "callbacks.h"
 #include "interface.h"
 #include "support.h"
 #include "coach.h"
-#include <curl/curl.h>
-
+#include "equipment.h"
 
 // Fonction helper pour lire les données
 static size_t read_callback(void *ptr, size_t size, size_t nmemb, void *userp) {
@@ -33,11 +36,30 @@ static size_t read_callback(void *ptr, size_t size, size_t nmemb, void *userp) {
 // =========================================================
 int gender = 1; // 1 = Male, 2 = Female
 
+// Variables pour équipements
+GtkWidget *current_window = NULL;
+char selected_role[20] = "";
+int remember_me = 0;
+
+// Variables pour stocker les valeurs courantes
+char current_id[20] = "";
+char current_name[50] = "";
+char current_centre[50] = "";
+char current_type[50] = "";
+int current_quantity = 1;
+int current_day = 1;
+int current_month = 1;
+int current_year = 2024;
+char current_state[20] = "Good";
+int search_by_name = 0;
+int search_by_centre = 0;
+char current_user_id[20];
+
 // =========================================================
 // DÉCLARATIONS DES FONCTIONS (PROTOTYPES)
 // =========================================================
 
-// Fonctions utilitaires (déclarées en premier)
+// Fonctions utilitaires
 void show_popup_message(GtkWidget *parent, const char *title, const char *message, GtkMessageType type);
 gboolean show_confirmation_dialog(GtkWidget *parent, const char *title, const char *message);
 int is_number(const char *str);
@@ -47,6 +69,8 @@ int is_letters(const char *str);
 void update_coach_in_file(int coach_id, int column_index, const char *new_value);
 int send_email_to_admin(const char *subject, const char *body, const char *action_type);
 int send_email_to_coach(const char *coach_email, const char *subject, const char *body);
+void clear_entries_admin(GtkWidget *window);
+void display_equipments_in_treeview(GtkWidget *treeview, Equipment *equipments, int count);
 
 // Fonctions pour TreeView
 void on_cell_toggled_coach(GtkCellRendererToggle *cell, gchar *path_str, gpointer data);
@@ -55,9 +79,14 @@ void create_columns_with_checkbox_coach(GtkTreeView *treeview, const char **titl
 GList* get_selected_coach_ids(GtkWidget *treeview);
 void loadCoaches(GtkTreeView *treeview, const char *filename);
 void loadCourses(GtkTreeView *treeview, const char *filename);
+void create_columns(GtkTreeView *treeview);
+void refresh_tree(GtkWidget *treeview);
+void refresh_course_tree(GtkWidget *treeview);
+int update_course_capacity(const char *course_id, int change_amount);
+int count_assigned_coaches(const char *course_id);
 
 // =========================================================
-// FONCTIONS UTILITAIRES (DÉFINIES EN PREMIER)
+// FONCTIONS UTILITAIRES
 // =========================================================
 
 // =========================================================
@@ -77,6 +106,16 @@ void show_popup_message(GtkWidget *parent, const char *title, const char *messag
     
     gtk_dialog_run(GTK_DIALOG(dialog));
     gtk_widget_destroy(dialog);
+}
+
+// Fonction show_message (alias pour compatibilité)
+void show_message(GtkWidget *parent, const char *message, GtkMessageType type) {
+    show_popup_message(parent, NULL, message, type);
+}
+
+// Fonction show_error (alias pour compatibilité)
+void show_error(const char *message) {
+    show_popup_message(NULL, "Error", message, GTK_MESSAGE_ERROR);
 }
 
 // =========================================================
@@ -877,9 +916,6 @@ void loadCoaches(GtkTreeView *treeview, const char *filename)
                               "Center", "Phone", "Gender", "Specialty"};
     create_columns_with_checkbox_coach(treeview, titles, 11);
     
-    // NE PAS unref le store ici - il est géré par GTK maintenant
-    // g_object_unref(store);
-    
     printf("=== DEBUG loadCoaches END ===\n");
 }
 
@@ -979,9 +1015,6 @@ void loadCourses(GtkTreeView *treeview, const char *filename)
     if (g_list_length(gtk_tree_view_get_columns(treeview)) == 0) {
         create_columns(treeview);
     }
-    
-    // NE PAS unref le store ici
-    // g_object_unref(store);
     
     printf("=== DEBUG loadCourses END ===\n");
 }
@@ -1160,6 +1193,99 @@ int count_assigned_coaches(const char *course_id)
     fclose(f);
     printf("DEBUG: Total assignments for course %s: %d\n", course_id, count);
     return count;
+}
+
+// =========================================================
+// FONCTIONS POUR ÉQUIPEMENTS
+// =========================================================
+
+// Fonction pour afficher les équipements dans le treeview
+void display_equipments_in_treeview(GtkWidget *treeview, Equipment *equipments, int count) {
+    GtkListStore *store;
+    GtkTreeIter iter;
+    GtkCellRenderer *renderer;
+    GtkTreeViewColumn *column;
+    
+    // Supprimer les anciennes colonnes
+    while (gtk_tree_view_get_column(GTK_TREE_VIEW(treeview), 0) != NULL) {
+        column = gtk_tree_view_get_column(GTK_TREE_VIEW(treeview), 0);
+        gtk_tree_view_remove_column(GTK_TREE_VIEW(treeview), column);
+    }
+    
+    // Créer le modèle
+    store = gtk_list_store_new(7, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
+                               G_TYPE_STRING, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING);
+    
+    // Ajouter les données
+    for (int i = 0; i < count; i++) {
+        char date[20];
+        sprintf(date, "%02d/%02d/%04d", equipments[i].day, equipments[i].month, equipments[i].year);
+        
+        gtk_list_store_append(store, &iter);
+        gtk_list_store_set(store, &iter,
+                          0, equipments[i].id,
+                          1, equipments[i].name,
+                          2, equipments[i].centre,
+                          3, equipments[i].type,
+                          4, equipments[i].quantity,
+                          5, date,
+                          6, equipments[i].state,
+                          -1);
+    }
+    
+    gtk_tree_view_set_model(GTK_TREE_VIEW(treeview), GTK_TREE_MODEL(store));
+    g_object_unref(store);
+    
+    // Créer les colonnes
+    renderer = gtk_cell_renderer_text_new();
+    column = gtk_tree_view_column_new_with_attributes("ID", renderer, "text", 0, NULL);
+    gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), column);
+    
+    renderer = gtk_cell_renderer_text_new();
+    column = gtk_tree_view_column_new_with_attributes("Name", renderer, "text", 1, NULL);
+    gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), column);
+    
+    renderer = gtk_cell_renderer_text_new();
+    column = gtk_tree_view_column_new_with_attributes("Centre", renderer, "text", 2, NULL);
+    gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), column);
+    
+    renderer = gtk_cell_renderer_text_new();
+    column = gtk_tree_view_column_new_with_attributes("Type", renderer, "text", 3, NULL);
+    gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), column);
+    
+    renderer = gtk_cell_renderer_text_new();
+    column = gtk_tree_view_column_new_with_attributes("Quantity", renderer, "text", 4, NULL);
+    gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), column);
+    
+    renderer = gtk_cell_renderer_text_new();
+    column = gtk_tree_view_column_new_with_attributes("Date", renderer, "text", 5, NULL);
+    gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), column);
+    
+    renderer = gtk_cell_renderer_text_new();
+    column = gtk_tree_view_column_new_with_attributes("State", renderer, "text", 6, NULL);
+    gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), column);
+}
+
+// Fonction pour vider les champs
+void clear_entries_admin(GtkWidget *window) {
+    GtkWidget *entry;
+    
+    entry = lookup_widget(window, "entry_id");
+    gtk_entry_set_text(GTK_ENTRY(entry), "");
+    
+    entry = lookup_widget(window, "entry_name");
+    gtk_entry_set_text(GTK_ENTRY(entry), "");
+    
+    entry = lookup_widget(window, "entry_centre");
+    gtk_entry_set_text(GTK_ENTRY(entry), "");
+    
+    entry = lookup_widget(window, "entry_type");
+    gtk_entry_set_text(GTK_ENTRY(entry), "");
+    
+    strcpy(current_id, "");
+    strcpy(current_name, "");
+    strcpy(current_centre, "");
+    strcpy(current_type, "");
 }
 
 // =========================================================
@@ -1898,9 +2024,6 @@ void on_btsearch_clicked(GtkButton *button, gpointer user_data)
                               "Center", "Phone", "Gender", "Specialty"};
     create_columns_with_checkbox_coach(GTK_TREE_VIEW(treeviewmanage), titles, 11);
     
-    // NE PAS unref le store ici
-    // g_object_unref(store);
-    
     // Nettoyer la mémoire
     if (clean_name) g_free(clean_name);
     if (clean_center) g_free(clean_center);
@@ -2523,410 +2646,560 @@ void on_checkbutton_center_toggled(GtkToggleButton *togglebutton, gpointer user_
     }
 }
 
-/*void
-on_treeviewajout_row_activated         (GtkTreeView     *treeview,
-                                        GtkTreePath     *path,
-                                        GtkTreeViewColumn *column,
-                                        gpointer         user_data)
-{
+// =========================================================
+// FONCTIONS POUR LE MENU DE SÉLECTION
+// =========================================================
 
+// Callbacks pour le menu de sélection
+void on_btn_select_admin_clicked(GtkButton *button, gpointer user_data) {
+    strcpy(selected_role, "admin");
+    GtkWidget *window = gtk_widget_get_toplevel(GTK_WIDGET(button));
+    gtk_widget_hide(window);
+    
+    GtkWidget *login = create_login();
+    gtk_widget_show(login);
+    current_window = login;
 }
 
-
-void
-on_checkbuttonname_toggled             (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-
+void on_btn_select_trainer_clicked(GtkButton *button, gpointer user_data) {
+    strcpy(selected_role, "trainer");
+    GtkWidget *window = gtk_widget_get_toplevel(GTK_WIDGET(button));
+    gtk_widget_hide(window);
+    
+    GtkWidget *login = create_login();
+    gtk_widget_show(login);
+    current_window = login;
 }
 
+// =========================================================
+// FONCTIONS POUR LE LOGIN
+// =========================================================
 
-void
-on_checkbuttoncentre_toggled           (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-
+void on_checkbtnrememberme_toggled(GtkToggleButton *togglebutton, gpointer user_data) {
+    remember_me = gtk_toggle_button_get_active(togglebutton);
 }
 
-
-void
-on_comboboxquantite_changed            (GtkComboBox     *combobox,
-                                        gpointer         user_data)
+void on_buttonlogin_clicked(GtkButton *button, gpointer user_data)
 {
+    GtkWidget *entry_id, *entry_password;
+    const char *id, *password;
 
+    entry_id = lookup_widget(GTK_WIDGET(button), "entry_id");
+    entry_password = lookup_widget(GTK_WIDGET(button), "entry_password");
+
+    id = gtk_entry_get_text(GTK_ENTRY(entry_id));
+    password = gtk_entry_get_text(GTK_ENTRY(entry_password));
+
+    /* ===== TRAINER ===== */
+    if (strcmp(selected_role, "trainer") == 0)
+    {
+        if (check_trainer_credentials(id, password))
+        {
+            /* 🔐 mémoriser l'id */
+            strcpy(current_user_id, id);
+
+            /* 💾 sauvegarder login */
+            save_login(id, "trainer", password);
+
+            /* ➜ ouvrir fenêtre trainer */
+            GtkWidget *trainer = create_windowtrainer();
+            gtk_widget_show(trainer);
+
+            /* 🔔 popup historique si déjà connecté avant */
+            if (trainer_logged_before(id))
+            {
+                show_trainer_history(id);
+            }
+
+            /* ❌ fermer login */
+            GtkWidget *login_window = gtk_widget_get_toplevel(GTK_WIDGET(button));
+            gtk_widget_destroy(login_window);
+        }
+        else
+        {
+            show_error("Error: Invalid credentials for selected role!");
+        }
+    }
+
+    /* ===== ADMIN (pour info) ===== */
+    else if (strcmp(selected_role, "admin") == 0)
+    {
+        if (check_admin_credentials(id, password))
+        {
+            save_login(id, "admin", password);
+
+            GtkWidget *admin = create_windowadmin();
+            gtk_widget_show(admin);
+
+            GtkWidget *login_window = gtk_widget_get_toplevel(GTK_WIDGET(button));
+            gtk_widget_destroy(login_window);
+        }
+        else
+        {
+            show_error("Error: Invalid credentials for selected role!");
+        }
+    }
 }
 
-
-void
-on_buttonlogoutadmin_clicked           (GtkButton       *button,
-                                        gpointer         user_data)
-{
-
+void on_buttoncancel_clicked(GtkButton *button, gpointer user_data) {
+    gtk_main_quit();
 }
 
+// =========================================================
+// FONCTIONS POUR L'ADMIN - ÉQUIPEMENTS
+// =========================================================
 
-void
-on_radiobtngood_toggled                (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-
+void on_entry_id_changed(GtkEditable *editable, gpointer user_data) {
+    const char *text = gtk_entry_get_text(GTK_ENTRY(editable));
+    strcpy(current_id, text);
 }
 
-
-void
-on_treeviewafficherdispo_row_activated (GtkTreeView     *treeview,
-                                        GtkTreePath     *path,
-                                        GtkTreeViewColumn *column,
-                                        gpointer         user_data)
-{
-
+void on_entry_name_changed(GtkEditable *editable, gpointer user_data) {
+    const char *text = gtk_entry_get_text(GTK_ENTRY(editable));
+    strcpy(current_name, text);
 }
 
-
-void
-on_buttonlogouttrtainer_clicked        (GtkButton       *button,
-                                        gpointer         user_data)
-{
-
+void on_entry_centre_changed(GtkEditable *editable, gpointer user_data) {
+    const char *text = gtk_entry_get_text(GTK_ENTRY(editable));
+    strcpy(current_centre, text);
 }
 
-
-void
-on_btdelete_b_clicked                  (GtkButton       *button,
-                                        gpointer         user_data)
-{
-
+void on_entry_type_changed(GtkEditable *editable, gpointer user_data) {
+    const char *text = gtk_entry_get_text(GTK_ENTRY(editable));
+    strcpy(current_type, text);
 }
 
-
-void
-on_btsearch_b_clicked                  (GtkButton       *button,
-                                        gpointer         user_data)
-{
-
+void on_entrysearch_changed(GtkEditable *editable, gpointer user_data) {
+    // La recherche se fait lors du clic sur le bouton search
 }
 
-
-void
-on_btshowall_b_clicked                 (GtkButton       *button,
-                                        gpointer         user_data)
-{
-
+void on_checkbuttonname_toggled(GtkToggleButton *togglebutton, gpointer user_data) {
+    search_by_name = gtk_toggle_button_get_active(togglebutton);
 }
 
-
-void
-on_btadd_b_clicked                     (GtkButton       *button,
-                                        gpointer         user_data)
-{
-
+void on_checkbuttoncentre_toggled(GtkToggleButton *togglebutton, gpointer user_data) {
+    search_by_centre = gtk_toggle_button_get_active(togglebutton);
 }
 
-
-void
-on_btmodify_b_clicked                  (GtkButton       *button,
-                                        gpointer         user_data)
-{
-
+void on_radiobtngood_toggled(GtkToggleButton *togglebutton, gpointer user_data) {
+    if (gtk_toggle_button_get_active(togglebutton)) {
+        strcpy(current_state, "Good");
+    }
 }
 
-
-void
-on_treeview1_b_row_activated           (GtkTreeView     *treeview,
-                                        GtkTreePath     *path,
-                                        GtkTreeViewColumn *column,
-                                        gpointer         user_data)
-{
-
+void on_radiobuttonbroken_toggled(GtkToggleButton *togglebutton, gpointer user_data) {
+    if (gtk_toggle_button_get_active(togglebutton)) {
+        strcpy(current_state, "Broken");
+    }
 }
 
-
-void
-on_treeview2_b_row_activated           (GtkTreeView     *treeview,
-                                        GtkTreePath     *path,
-                                        GtkTreeViewColumn *column,
-                                        gpointer         user_data)
-{
-
+void on_comboboxquantite_changed(GtkComboBox *combobox, gpointer user_data) {
+    char *text = gtk_combo_box_get_active_text(combobox);
+    if (text != NULL) {
+        current_quantity = atoi(text);
+        g_free(text);
+    }
 }
 
-
-void
-on_btshow_b_clicked                    (GtkButton       *button,
-                                        gpointer         user_data)
-{
-
+void on_spinbutton1_change_value(GtkSpinButton *spinbutton, gpointer user_data) {
+    current_day = gtk_spin_button_get_value_as_int(spinbutton);
 }
 
-
-void
-on_btshoose_b_clicked                  (GtkButton       *button,
-                                        gpointer         user_data)
-{
-
+void on_spinbutton2_value_changed(GtkSpinButton *spinbutton, gpointer user_data) {
+    current_month = gtk_spin_button_get_value_as_int(spinbutton);
 }
 
-
-void
-on_treeviewchoose_y_row_activated      (GtkTreeView     *treeview,
-                                        GtkTreePath     *path,
-                                        GtkTreeViewColumn *column,
-                                        gpointer         user_data)
-{
-
+void on_spinbutton3_change_value(GtkSpinButton *spinbutton, gpointer user_data) {
+    current_year = gtk_spin_button_get_value_as_int(spinbutton);
 }
 
-
-void
-on_loadcourses_y_clicked               (GtkButton       *button,
-                                        gpointer         user_data)
-{
-
+void on_btn_add_clicked(GtkButton *button, gpointer user_data) {
+    GtkWidget *window = gtk_widget_get_toplevel(GTK_WIDGET(button));
+    
+    if (strlen(current_id) == 0 || strlen(current_name) == 0 || 
+        strlen(current_centre) == 0 || strlen(current_type) == 0) {
+        show_message(window, "Error: Please fill all fields!", GTK_MESSAGE_ERROR);
+        return;
+    }
+    
+    Equipment eq;
+    strcpy(eq.id, current_id);
+    strcpy(eq.name, current_name);
+    strcpy(eq.centre, current_centre);
+    strcpy(eq.type, current_type);
+    eq.quantity = current_quantity;
+    eq.day = current_day;
+    eq.month = current_month;
+    eq.year = current_year;
+    strcpy(eq.state, current_state);
+    
+    if (add_equipment(eq)) {
+        show_message(window, "Equipment added successfully!", GTK_MESSAGE_INFO);
+        clear_entries_admin(window);
+        
+        // Rafraîchir le treeview
+        GtkWidget *treeview = lookup_widget(window, "treeviewajout");
+        int count;
+        Equipment *all_eq = get_all_equipments(&count);
+        if (all_eq != NULL) {
+            display_equipments_in_treeview(treeview, all_eq, count);
+            free(all_eq);
+        }
+    } else {
+        show_message(window, "Error: Could not add equipment!", GTK_MESSAGE_ERROR);
+    }
 }
 
-
-void
-on_btchoose_y_clicked                  (GtkButton       *button,
-                                        gpointer         user_data)
-{
-
+void on_btn_modifie_clicked(GtkButton *button, gpointer user_data) {
+    GtkWidget *window = gtk_widget_get_toplevel(GTK_WIDGET(button));
+    
+    if (strlen(current_id) == 0) {
+        show_message(window, "Error: Please select or enter an equipment ID!", GTK_MESSAGE_ERROR);
+        return;
+    }
+    
+    Equipment eq;
+    strcpy(eq.id, current_id);
+    strcpy(eq.name, current_name);
+    strcpy(eq.centre, current_centre);
+    strcpy(eq.type, current_type);
+    eq.quantity = current_quantity;
+    eq.day = current_day;
+    eq.month = current_month;
+    eq.year = current_year;
+    strcpy(eq.state, current_state);
+    
+    if (modify_equipment(current_id, eq)) {
+        show_message(window, "Equipment modified successfully!", GTK_MESSAGE_INFO);
+        
+        // Rafraîchir le treeview
+        GtkWidget *treeview = lookup_widget(window, "treeviewajout");
+        int count;
+        Equipment *all_eq = get_all_equipments(&count);
+        if (all_eq != NULL) {
+            display_equipments_in_treeview(treeview, all_eq, count);
+            free(all_eq);
+        }
+    } else {
+        show_message(window, "Error: Equipment not found!", GTK_MESSAGE_ERROR);
+    }
 }
 
-
-void
-on_treeviewcourse_y_row_activated      (GtkTreeView     *treeview,
-                                        GtkTreePath     *path,
-                                        GtkTreeViewColumn *column,
-                                        gpointer         user_data)
-{
-
+void on_btn_delete_clicked(GtkButton *button, gpointer user_data) {
+    GtkWidget *window = gtk_widget_get_toplevel(GTK_WIDGET(button));
+    
+    if (strlen(current_id) == 0) {
+        show_message(window, "Error: Please select or enter an equipment ID!", GTK_MESSAGE_ERROR);
+        return;
+    }
+    
+    if (delete_equipment(current_id)) {
+        show_message(window, "Equipment deleted successfully!", GTK_MESSAGE_INFO);
+        clear_entries_admin(window);
+        
+        // Rafraîchir le treeview
+        GtkWidget *treeview = lookup_widget(window, "treeviewajout");
+        int count;
+        Equipment *all_eq = get_all_equipments(&count);
+        if (all_eq != NULL) {
+            display_equipments_in_treeview(treeview, all_eq, count);
+            free(all_eq);
+        }
+    } else {
+        show_message(window, "Error: Equipment not found!", GTK_MESSAGE_ERROR);
+    }
 }
 
-
-void
-on_btsearch_y_clicked                  (GtkButton       *button,
-                                        gpointer         user_data)
-{
-
+void on_btn_search_clicked(GtkButton *button, gpointer user_data) {
+    GtkWidget *window = gtk_widget_get_toplevel(GTK_WIDGET(button));
+    GtkWidget *entry_search = lookup_widget(window, "entrysearch");
+    GtkWidget *treeview = lookup_widget(window, "treeviewajout");
+    
+    const char *search_text = gtk_entry_get_text(GTK_ENTRY(entry_search));
+    
+    if (strlen(search_text) == 0) {
+        show_message(window, "Error: Please enter a search term!", GTK_MESSAGE_ERROR);
+        return;
+    }
+    
+    Equipment *results = NULL;
+    int count = 0;
+    int total_count = 0;
+    
+    if (search_by_name && search_by_centre) {
+        // Recherche par nom ET centre
+        FILE *f = fopen("equipments.txt", "r");
+        if (f != NULL) {
+            Equipment eq;
+            while (fscanf(f, "%[^|]|%[^|]|%[^|]|%[^|]|%d|%d|%d|%d|%[^\n]\n",
+                          eq.id, eq.name, eq.centre, eq.type,
+                          &eq.quantity, &eq.day, &eq.month, &eq.year, eq.state) == 9) {
+                if (strstr(eq.name, search_text) != NULL && strstr(eq.centre, search_text) != NULL) {
+                    count++;
+                    results = (Equipment*)realloc(results, count * sizeof(Equipment));
+                    results[count-1] = eq;
+                }
+            }
+            fclose(f);
+        }
+    } else if (search_by_name) {
+        // Recherche par nom uniquement
+        FILE *f = fopen("equipments.txt", "r");
+        if (f != NULL) {
+            Equipment eq;
+            while (fscanf(f, "%[^|]|%[^|]|%[^|]|%[^|]|%d|%d|%d|%d|%[^\n]\n",
+                          eq.id, eq.name, eq.centre, eq.type,
+                          &eq.quantity, &eq.day, &eq.month, &eq.year, eq.state) == 9) {
+                if (strstr(eq.name, search_text) != NULL) {
+                    count++;
+                    results = (Equipment*)realloc(results, count * sizeof(Equipment));
+                    results[count-1] = eq;
+                }
+            }
+            fclose(f);
+        }
+    } else if (search_by_centre) {
+        // Recherche par centre uniquement
+        FILE *f = fopen("equipments.txt", "r");
+        if (f != NULL) {
+            Equipment eq;
+            while (fscanf(f, "%[^|]|%[^|]|%[^|]|%[^|]|%d|%d|%d|%d|%[^\n]\n",
+                          eq.id, eq.name, eq.centre, eq.type,
+                          &eq.quantity, &eq.day, &eq.month, &eq.year, eq.state) == 9) {
+                if (strstr(eq.centre, search_text) != NULL) {
+                    count++;
+                    results = (Equipment*)realloc(results, count * sizeof(Equipment));
+                    results[count-1] = eq;
+                }
+            }
+            fclose(f);
+        }
+    } else {
+        show_message(window, "Error: Please select Name or Centre checkbox!", GTK_MESSAGE_ERROR);
+        return;
+    }
+    
+    if (results != NULL && count > 0) {
+        display_equipments_in_treeview(treeview, results, count);
+        free(results);
+        
+        char msg[100];
+        sprintf(msg, "%d equipment(s) found!", count);
+        show_message(window, msg, GTK_MESSAGE_INFO);
+    } else {
+        show_message(window, "No equipment found!", GTK_MESSAGE_INFO);
+    }
 }
 
-
-void
-on_btdelete_y_clicked                  (GtkButton       *button,
-                                        gpointer         user_data)
-{
-
+void on_btn_Display_All_clicked(GtkButton *button, gpointer user_data) {
+    GtkWidget *window = gtk_widget_get_toplevel(GTK_WIDGET(button));
+    GtkWidget *treeview = lookup_widget(window, "treeviewajout");
+    
+    int count;
+    Equipment *all_eq = get_all_equipments(&count);
+    
+    if (all_eq != NULL && count > 0) {
+        display_equipments_in_treeview(treeview, all_eq, count);
+        free(all_eq);
+        
+        char msg[100];
+        sprintf(msg, "%d equipment(s) displayed!", count);
+        show_message(window, msg, GTK_MESSAGE_INFO);
+    } else {
+        show_message(window, "No equipments found!", GTK_MESSAGE_INFO);
+    }
 }
 
+// =========================================================
+// FONCTIONS POUR LOGOUT
+// =========================================================
 
-void
-on_load_y_clicked                      (GtkButton       *button,
-                                        gpointer         user_data)
+void on_buttonlogoutadmin_clicked(GtkButton *button, gpointer user_data)
 {
+    GtkWidget *window = gtk_widget_get_toplevel(GTK_WIDGET(button));
 
+    remember_me = 0;
+    selected_role[0] = '\0';
+
+ 
+
+    gtk_widget_destroy(window);
 }
 
-
-void
-on_btadd_y_clicked                     (GtkButton       *button,
-                                        gpointer         user_data)
+void on_buttonlogouttrtainer_clicked(GtkButton *button, gpointer user_data)
 {
+    GtkWidget *window = gtk_widget_get_toplevel(GTK_WIDGET(button));
 
+    remember_me = 0;
+    selected_role[0] = '\0';
+
+
+
+    gtk_widget_destroy(window);
 }
 
+// =========================================================
+// FONCTIONS POUR TREEVIEW ÉQUIPEMENTS
+// =========================================================
 
-void
-on_btmodify_y_clicked                  (GtkButton       *button,
-                                        gpointer         user_data)
-{
-
+void on_treeviewajout_row_activated(GtkTreeView *treeview, GtkTreePath *path,
+                                    GtkTreeViewColumn *column, gpointer user_data) {
+    GtkTreeModel *model;
+    GtkTreeIter iter;
+    char *id, *name, *centre, *type, *state, *date;
+    int quantity;
+    
+    model = gtk_tree_view_get_model(treeview);
+    
+    if (gtk_tree_model_get_iter(model, &iter, path)) {
+        gtk_tree_model_get(model, &iter,
+                          0, &id,
+                          1, &name,
+                          2, &centre,
+                          3, &type,
+                          4, &quantity,
+                          5, &date,
+                          6, &state,
+                          -1);
+        
+        GtkWidget *window = gtk_widget_get_toplevel(GTK_WIDGET(treeview));
+        
+        // Remplir les champs avec les données sélectionnées
+        GtkWidget *entry = lookup_widget(window, "entry_id");
+        gtk_entry_set_text(GTK_ENTRY(entry), id);
+        strcpy(current_id, id);
+        
+        entry = lookup_widget(window, "entry_name");
+        gtk_entry_set_text(GTK_ENTRY(entry), name);
+        strcpy(current_name, name);
+        
+        entry = lookup_widget(window, "entry_centre");
+        gtk_entry_set_text(GTK_ENTRY(entry), centre);
+        strcpy(current_centre, centre);
+        
+        entry = lookup_widget(window, "entry_type");
+        gtk_entry_set_text(GTK_ENTRY(entry), type);
+        strcpy(current_type, type);
+        
+        // Parse date
+        int d, m, y;
+        sscanf(date, "%d/%d/%d", &d, &m, &y);
+        
+        GtkWidget *spin = lookup_widget(window, "spinbuttondatejours");
+        gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin), d);
+        current_day = d;
+        
+        spin = lookup_widget(window, "spinbuttondatemoins");
+        gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin), m);
+        current_month = m;
+        
+        spin = lookup_widget(window, "spinbuttondateanne");
+        gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin), y);
+        current_year = y;
+        
+        // Set quantity
+        GtkWidget *combo = lookup_widget(window, "comboboxquantite");
+        gtk_combo_box_set_active(GTK_COMBO_BOX(combo), quantity - 1);
+        current_quantity = quantity;
+        
+        // Set state radio button
+        if (strcmp(state, "Good") == 0) {
+            GtkWidget *radio = lookup_widget(window, "radiobtngood");
+            gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(radio), TRUE);
+            strcpy(current_state, "Good");
+        } else {
+            GtkWidget *radio = lookup_widget(window, "radiobuttonbroken");
+            gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(radio), TRUE);
+            strcpy(current_state, "Broken");
+        }
+        
+        g_free(id);
+        g_free(name);
+        g_free(centre);
+        g_free(type);
+        g_free(state);
+        g_free(date);
+    }
 }
 
+// =========================================================
+// FONCTIONS POUR LE TRAINER
+// =========================================================
 
-void
-on_radiobuttonMorning_y_toggled        (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-
+void on_affichereqpdispotrainer_clicked(GtkButton *button, gpointer user_data) {
+    GtkWidget *window = gtk_widget_get_toplevel(GTK_WIDGET(button));
+    GtkWidget *treeview = lookup_widget(window, "treeviewafficherdispo");
+    
+    int count;
+    Equipment *available = get_available_equipments(&count);
+    
+    if (available != NULL && count > 0) {
+        display_equipments_in_treeview(treeview, available, count);
+        free(available);
+        
+        char msg[100];
+        sprintf(msg, "%d available equipment(s) loaded!", count);
+        show_message(window, msg, GTK_MESSAGE_INFO);
+    } else {
+        show_message(window, "No available equipments!", GTK_MESSAGE_INFO);
+    }
 }
 
-
-void
-on_radiobuttonafternoon_y_toggled      (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-
+void on_togglebuttonreservertrainer_clicked(GtkButton *button, gpointer user_data) {
+    GtkWidget *window = gtk_widget_get_toplevel(GTK_WIDGET(button));
+    GtkWidget *entry = lookup_widget(window, "entryidequipmenttrainer");
+    
+    const char *id = gtk_entry_get_text(GTK_ENTRY(entry));
+    
+    if (strlen(id) == 0) {
+        show_message(window, "Error: Please enter an equipment ID!", GTK_MESSAGE_ERROR);
+        return;
+    }
+    
+    Equipment *eq = search_equipment_by_id((char*)id);
+    
+    if (eq != NULL) {
+        if (strcmp(eq->state, "Good") == 0) {
+            // Get date and time from spinbuttons
+            GtkWidget *spin_day = lookup_widget(window, "spinbuttonjrs");
+            GtkWidget *spin_month = lookup_widget(window, "spinbuttonmounth");
+            GtkWidget *spin_hour = lookup_widget(window, "spinbuttonheurs");
+            GtkWidget *spin_min = lookup_widget(window, "spinbuttonmint");
+            
+            int day = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(spin_day));
+            int month = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(spin_month));
+            int hour = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(spin_hour));
+            int min = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(spin_min));
+            
+            char msg[200];
+            sprintf(msg, "Equipment '%s' reserved successfully!\nDate: %02d/%02d\nTime: %02d:%02d", 
+                    eq->name, day, month, hour, min);
+            show_message(window, msg, GTK_MESSAGE_INFO);
+            free(eq);
+        } else {
+            show_message(window, "Error: Equipment is broken and cannot be reserved!", GTK_MESSAGE_ERROR);
+            free(eq);
+        }
+    } else {
+        show_message(window, "Error: Equipment not found!", GTK_MESSAGE_ERROR);
+    }
 }
 
-
-void
-on_radiobuttonnight_y_toggled          (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-
+void on_treeviewafficherdispo_row_activated(GtkTreeView *treeview, GtkTreePath *path,
+                                           GtkTreeViewColumn *column, gpointer user_data) {
+    GtkTreeModel *model;
+    GtkTreeIter iter;
+    char *id;
+    
+    model = gtk_tree_view_get_model(treeview);
+    
+    if (gtk_tree_model_get_iter(model, &iter, path)) {
+        gtk_tree_model_get(model, &iter, 0, &id, -1);
+        
+        GtkWidget *window = gtk_widget_get_toplevel(GTK_WIDGET(treeview));
+        GtkWidget *entry = lookup_widget(window, "entryidequipmenttrainer");
+        gtk_entry_set_text(GTK_ENTRY(entry), id);
+        
+        g_free(id);
+    }
 }
-
-
-void
-on_radiobuttonTreadmill_y_toggled      (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-
-}
-
-
-void
-on_radiobuttonsquatmachine_y_toggled   (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-
-}
-
-
-void
-on_radiobuttonNo_y_toggled             (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-
-}
-
-
-void
-on_entrysearch_changed                 (GtkEditable     *editable,
-                                        gpointer         user_data)
-{
-
-}
-
-
-void
-on_treeviewajout_row_activated         (GtkTreeView     *treeview,
-                                        GtkTreePath     *path,
-                                        GtkTreeViewColumn *column,
-                                        gpointer         user_data)
-{
-
-}
-
-
-void
-on_checkbuttonname_toggled             (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-
-}
-
-
-void
-on_bttaddcoach_a_clicked               (GtkButton       *button,
-                                        gpointer         user_data)
-{
-
-}
-
-
-void
-on_btassigncoach_a_clicked             (GtkButton       *button,
-                                        gpointer         user_data)
-{
-
-}
-
-
-void
-on_btmanageequipement_clicked          (GtkButton       *button,
-                                        gpointer         user_data)
-{
-
-}
-
-
-void
-on_btmanagecourses_clicked             (GtkButton       *button,
-                                        gpointer         user_data)
-{
-
-}
-
-
-void
-on_btmanagecoachs_clicked              (GtkButton       *button,
-                                        gpointer         user_data)
-{
-
-}
-
-
-void
-on_btmanagememebers_clicked            (GtkButton       *button,
-                                        gpointer         user_data)
-{
-
-}
-
-
-void
-on_btjoincourse_clicked                (GtkButton       *button,
-                                        gpointer         user_data)
-{
-
-}
-
-
-void
-on_bttreserveequipement_a_clicked      (GtkButton       *button,
-                                        gpointer         user_data)
-{
-
-}
-
-
-void
-on_btparticipatecoach_a_clicked        (GtkButton       *button,
-                                        gpointer         user_data)
-{
-
-}
-
-
-void
-on_btreserveprivatecoach_a_clicked     (GtkButton       *button,
-                                        gpointer         user_data)
-{
-
-}
-
-
-void
-on_treeview_2_row_activated            (GtkTreeView     *treeview,
-                                        GtkTreePath     *path,
-                                        GtkTreeViewColumn *column,
-                                        gpointer         user_data)
-{
-
-}
-
-
-void
-on_refresh_2_clicked                   (GtkButton       *button,
-                                        gpointer         user_data)
-{
-
-}
-
-
-void
-on_btchoose_clicked                    (GtkButton       *button,
-                                        gpointer         user_data)
-{
-
-}*/
-
-
-void
-on_radiobuttonbunchpress_y_toggled     (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-
-}
-
