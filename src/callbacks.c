@@ -2895,7 +2895,7 @@ on_btreserveprivatecoach_a_clicked     (GtkButton       *button,
 {
 
 }
-*/
+
 
 void
 on_treeview_2_row_activated            (GtkTreeView     *treeview,
@@ -2920,5 +2920,5 @@ on_btchoose_clicked                    (GtkButton       *button,
                                         gpointer         user_data)
 {
 
-}
+}*/
 

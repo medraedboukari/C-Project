@@ -632,7 +632,7 @@ create_raed_reserve_materiel (void)
   return raed_reserve_materiel;
 }
 
-GtkWidget*
+/*GtkWidget*
 create_yassinemanagemembres (void)
 {
   GtkWidget *yassinemanagemembres;
@@ -998,7 +998,7 @@ create_yassinemanagemembres (void)
                     G_CALLBACK (on_btmodify_b_clicked),
                     NULL);
 
-  /* Store pointers to all widgets, for use by lookup_widget(). */
+
   GLADE_HOOKUP_OBJECT_NO_REF (yassinemanagemembres, yassinemanagemembres, "yassinemanagemembres");
   GLADE_HOOKUP_OBJECT (yassinemanagemembres, fixed20, "fixed20");
   GLADE_HOOKUP_OBJECT (yassinemanagemembres, treeview1_b, "treeview1_b");
@@ -1149,7 +1149,7 @@ create_yassinerequestcoach (void)
                     G_CALLBACK (on_btshoose_b_clicked),
                     NULL);
 
-  /* Store pointers to all widgets, for use by lookup_widget(). */
+
   GLADE_HOOKUP_OBJECT_NO_REF (yassinerequestcoach, yassinerequestcoach, "yassinerequestcoach");
   GLADE_HOOKUP_OBJECT (yassinerequestcoach, fixed21, "fixed21");
   GLADE_HOOKUP_OBJECT (yassinerequestcoach, treeview2_b, "treeview2_b");
@@ -1274,7 +1274,7 @@ create_yomna_choose_course (void)
                     G_CALLBACK (on_btchoose_y_clicked),
                     NULL);
 
-  /* Store pointers to all widgets, for use by lookup_widget(). */
+
   GLADE_HOOKUP_OBJECT_NO_REF (yomna_choose_course, yomna_choose_course, "yomna_choose_course");
   GLADE_HOOKUP_OBJECT (yomna_choose_course, fixed22, "fixed22");
   GLADE_HOOKUP_OBJECT (yomna_choose_course, label226, "label226");
@@ -1754,7 +1754,7 @@ create_yomna_course_managment (void)
                     G_CALLBACK (on_radiobuttonNo_y_toggled),
                     NULL);
 
-  /* Store pointers to all widgets, for use by lookup_widget(). */
+
   GLADE_HOOKUP_OBJECT_NO_REF (yomna_course_managment, yomna_course_managment, "yomna_course_managment");
   GLADE_HOOKUP_OBJECT (yomna_course_managment, fixed23, "fixed23");
   GLADE_HOOKUP_OBJECT (yomna_course_managment, treeviewcourse_y, "treeviewcourse_y");
@@ -2292,7 +2292,7 @@ create_windowadmin (void)
                     G_CALLBACK (on_buttonlogoutadmin_clicked),
                     NULL);
 
-  /* Store pointers to all widgets, for use by lookup_widget(). */
+
   GLADE_HOOKUP_OBJECT_NO_REF (windowadmin, windowadmin, "windowadmin");
   GLADE_HOOKUP_OBJECT (windowadmin, fixed24, "fixed24");
   GLADE_HOOKUP_OBJECT (windowadmin, label252, "label252");
@@ -2481,7 +2481,7 @@ create_login (void)
                     G_CALLBACK (on_buttoncancel_clicked),
                     NULL);
 
-  /* Store pointers to all widgets, for use by lookup_widget(). */
+
   GLADE_HOOKUP_OBJECT_NO_REF (login, login, "login");
   GLADE_HOOKUP_OBJECT (login, fixed25, "fixed25");
   GLADE_HOOKUP_OBJECT (login, entryiduser, "entryiduser");
@@ -2684,7 +2684,7 @@ create_windowtrainer (void)
                     G_CALLBACK (on_buttonlogouttrtainer_clicked),
                     NULL);
 
-  /* Store pointers to all widgets, for use by lookup_widget(). */
+
   GLADE_HOOKUP_OBJECT_NO_REF (windowtrainer, windowtrainer, "windowtrainer");
   GLADE_HOOKUP_OBJECT (windowtrainer, fixed26, "fixed26");
   GLADE_HOOKUP_OBJECT (windowtrainer, entryidequipmenttrainer, "entryidequipmenttrainer");
@@ -2776,7 +2776,7 @@ create_space_admin (void)
                     G_CALLBACK (on_btmanagememebers_clicked),
                     NULL);
 
-  /* Store pointers to all widgets, for use by lookup_widget(). */
+
   GLADE_HOOKUP_OBJECT_NO_REF (space_admin, space_admin, "space_admin");
   GLADE_HOOKUP_OBJECT (space_admin, fixed27, "fixed27");
   GLADE_HOOKUP_OBJECT (space_admin, btmanageequipement, "btmanageequipement");
@@ -2828,7 +2828,7 @@ create_space_coach (void)
                     G_CALLBACK (on_bttreserveequipement_a_clicked),
                     NULL);
 
-  /* Store pointers to all widgets, for use by lookup_widget(). */
+
   GLADE_HOOKUP_OBJECT_NO_REF (space_coach, space_coach, "space_coach");
   GLADE_HOOKUP_OBJECT (space_coach, fixed28, "fixed28");
   GLADE_HOOKUP_OBJECT (space_coach, label285, "label285");
@@ -2884,7 +2884,7 @@ create_space_members (void)
                     G_CALLBACK (on_btreserveprivatecoach_a_clicked),
                     NULL);
 
-  /* Store pointers to all widgets, for use by lookup_widget(). */
+
   GLADE_HOOKUP_OBJECT_NO_REF (space_members, space_members, "space_members");
   GLADE_HOOKUP_OBJECT (space_members, fixed29, "fixed29");
   GLADE_HOOKUP_OBJECT (space_members, label287, "label287");
@@ -2894,4 +2894,4 @@ create_space_members (void)
 
   return space_members;
 }
-
+*/
