@@ -2843,10 +2843,10 @@ create_space_members (void)
 {
   GtkWidget *space_members;
   GtkWidget *fixed29;
-  GtkWidget *label286;
   GtkWidget *label287;
   GtkWidget *btparticipatecoach_a;
   GtkWidget *btreserveprivatecoach_a;
+  GtkWidget *label286;
 
   space_members = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_widget_set_size_request (space_members, 700, 600);
@@ -2857,25 +2857,25 @@ create_space_members (void)
   gtk_widget_show (fixed29);
   gtk_container_add (GTK_CONTAINER (space_members), fixed29);
 
-  label286 = gtk_label_new ("");
-  gtk_widget_show (label286);
-  gtk_fixed_put (GTK_FIXED (fixed29), label286, 328, 504);
-  gtk_widget_set_size_request (label286, 192, 40);
-
   label287 = gtk_label_new (_("Space Members "));
   gtk_widget_show (label287);
-  gtk_fixed_put (GTK_FIXED (fixed29), label287, 224, 80);
+  gtk_fixed_put (GTK_FIXED (fixed29), label287, 304, 104);
   gtk_widget_set_size_request (label287, 240, 64);
 
   btparticipatecoach_a = gtk_button_new_with_mnemonic (_("particiapte in course"));
   gtk_widget_show (btparticipatecoach_a);
-  gtk_fixed_put (GTK_FIXED (fixed29), btparticipatecoach_a, 192, 192);
+  gtk_fixed_put (GTK_FIXED (fixed29), btparticipatecoach_a, 288, 224);
   gtk_widget_set_size_request (btparticipatecoach_a, 304, 56);
 
   btreserveprivatecoach_a = gtk_button_new_with_mnemonic (_("resereve private caoch "));
   gtk_widget_show (btreserveprivatecoach_a);
-  gtk_fixed_put (GTK_FIXED (fixed29), btreserveprivatecoach_a, 200, 320);
-  gtk_widget_set_size_request (btreserveprivatecoach_a, 304, 48);
+  gtk_fixed_put (GTK_FIXED (fixed29), btreserveprivatecoach_a, 288, 344);
+  gtk_widget_set_size_request (btreserveprivatecoach_a, 304, 56);
+
+  label286 = gtk_label_new ("");
+  gtk_widget_show (label286);
+  gtk_fixed_put (GTK_FIXED (fixed29), label286, 328, 504);
+  gtk_widget_set_size_request (label286, 192, 40);
 
   g_signal_connect ((gpointer) btparticipatecoach_a, "clicked",
                     G_CALLBACK (on_btparticipatecoach_a_clicked),
@@ -2887,10 +2887,10 @@ create_space_members (void)
   /* Store pointers to all widgets, for use by lookup_widget(). */
   GLADE_HOOKUP_OBJECT_NO_REF (space_members, space_members, "space_members");
   GLADE_HOOKUP_OBJECT (space_members, fixed29, "fixed29");
-  GLADE_HOOKUP_OBJECT (space_members, label286, "label286");
   GLADE_HOOKUP_OBJECT (space_members, label287, "label287");
   GLADE_HOOKUP_OBJECT (space_members, btparticipatecoach_a, "btparticipatecoach_a");
   GLADE_HOOKUP_OBJECT (space_members, btreserveprivatecoach_a, "btreserveprivatecoach_a");
+  GLADE_HOOKUP_OBJECT (space_members, label286, "label286");
 
   return space_members;
 }

@@ -248,3 +248,17 @@ on_btparticipatecoach_a_clicked        (GtkButton       *button,
 void
 on_btreserveprivatecoach_a_clicked     (GtkButton       *button,
                                         gpointer         user_data);
+
+void
+on_treeview_2_row_activated            (GtkTreeView     *treeview,
+                                        GtkTreePath     *path,
+                                        GtkTreeViewColumn *column,
+                                        gpointer         user_data);
+
+void
+on_refresh_2_clicked                   (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_btchoose_clicked                    (GtkButton       *button,
+                                        gpointer         user_data);
