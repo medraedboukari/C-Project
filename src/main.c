@@ -15,11 +15,7 @@
 int
 main (int argc, char *argv[])
 {
-  GtkWidget *raed_manage_coach;
-  GtkWidget *raed_reserve_materiel;
-  GtkWidget *windowadmin;
-  GtkWidget *login;
-  GtkWidget *windowtrainer;
+  GtkWidget *login_window;
 
 #ifdef ENABLE_NLS
   bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
@@ -33,65 +29,11 @@ main (int argc, char *argv[])
   add_pixmap_directory (PACKAGE_DATA_DIR "/" PACKAGE "/pixmaps");
 
   /*
-   * Open ALL windows for testing
+   * Start with login window
    */
-  
-  // 1. Coach Management Window
-  raed_manage_coach = create_raed_manage_coach();
-  gtk_widget_show(raed_manage_coach);
-  
-  // 2. Equipment Reservation Window
-  raed_reserve_materiel = create_raed_reserve_materiel();
-  gtk_widget_show(raed_reserve_materiel);
-  
-  // 3. Admin Window
-  windowadmin = create_windowadmin();
-  gtk_widget_show(windowadmin);
-  
-  // 4. Login Window
-  login = create_login();
-  gtk_widget_show(login);
-  
-  // 5. Trainer Window
-  windowtrainer = create_windowtrainer();
-  gtk_widget_show(windowtrainer);
+  login_window = create_login ();
+  gtk_widget_show (login_window);
 
-  /*
-   * If you have the commented-out windows (from interface.c),
-   * you can uncomment and add them too:
-   */
-  /*
-  // Uncomment these if you want to test all windows:
-  
-  // Member Management Window
-  GtkWidget *yassinemanagemembres = create_yassinemanagemembres();
-  gtk_widget_show(yassinemanagemembres);
-  
-  // Request Coach Window
-  GtkWidget *yassinerequestcoach = create_yassinerequestcoach();
-  gtk_widget_show(yassinerequestcoach);
-  
-  // Choose Course Window
-  GtkWidget *yomna_choose_course = create_yomna_choose_course();
-  gtk_widget_show(yomna_choose_course);
-  
-  // Course Management Window
-  GtkWidget *yomna_course_managment = create_yomna_course_managment();
-  gtk_widget_show(yomna_course_managment);
-  
-  // Space Admin Window
-  GtkWidget *space_admin = create_space_admin();
-  gtk_widget_show(space_admin);
-  
-  // Space Coach Window
-  GtkWidget *space_coach = create_space_coach();
-  gtk_widget_show(space_coach);
-  
-  // Space Members Window
-  GtkWidget *space_members = create_space_members();
-  gtk_widget_show(space_members);
-  */
-
-  gtk_main();
+  gtk_main ();
   return 0;
 }

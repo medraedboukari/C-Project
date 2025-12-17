@@ -11,6 +11,3 @@ GtkWidget* create_yomna_course_managment (void);
 GtkWidget* create_windowadmin (void);
 GtkWidget* create_login (void);
 GtkWidget* create_windowtrainer (void);
-GtkWidget* create_space_admin (void);
-GtkWidget* create_space_coach (void);
-GtkWidget* create_space_members (void);

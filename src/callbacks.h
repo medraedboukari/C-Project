@@ -151,5 +151,14 @@ void on_treeview_2_row_activated(GtkTreeView *treeview, GtkTreePath *path,
                                  GtkTreeViewColumn *column, gpointer user_data);
 void on_refresh_2_clicked(GtkButton *button, gpointer user_data);
 void on_btchoose_clicked(GtkButton *button, gpointer user_data);
+void
+on_logoutraed_manage_coach_clicked     (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_logoutraed_reserve_material_clicked (GtkButton       *button,
+                                        gpointer         user_data);
 
 #endif // CALLBACKS_H
+
+

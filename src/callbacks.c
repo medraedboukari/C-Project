@@ -1,3 +1,6 @@
+// =========================================================
+// CORRECT HEADER SECTION - ADD THIS AT THE TOP OF callbacks.c
+// =========================================================
 #include <gtk/gtk.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,11 +10,155 @@
 #include <stdio.h>
 #include <curl/curl.h>
 
+// ADD THESE INCLUDES FOR size_t and standard types
+#include <sys/types.h>    // For size_t, ssize_t
+#include <stddef.h>       // For size_t (alternative)
+
 #include "callbacks.h"
 #include "interface.h"
 #include "support.h"
 #include "coach.h"
 #include "equipment.h"
+
+
+
+// =========================================================
+// USER DATABASE STRUCTURE - ADD THIS AT THE TOP
+// =========================================================
+typedef struct {
+    char *username;
+    char *password;
+    char *description;
+    GtkWidget* (*create_window_func)(void);
+} UserCredentials;
+
+// User database - all your users - ADD THIS
+UserCredentials users[] = {
+    {"raedcoach", "raed123", "Manage Coach", create_raed_manage_coach},
+    {"raedcoach", "raed2025", "Reserve Material", create_raed_reserve_materiel},
+    {"admin", "admin123", "Admin", create_windowadmin},
+    {"trainer", "trainer123", "Trainer", create_windowtrainer},
+    {NULL, NULL, NULL, NULL} // End marker
+};
+
+// =========================================================
+// COMPLETE LOGIN FUNCTION FOR ALL USERS - REPLACE THE EXISTING ONE
+// =========================================================
+void on_buttonlogin_clicked(GtkButton *button, gpointer user_data)
+{
+    printf("\n=== LOGIN ATTEMPT ===\n");
+    
+    // Get the login window
+    GtkWidget *login_window = gtk_widget_get_toplevel(GTK_WIDGET(button));
+    
+    // Get the username and password entries
+    GtkWidget *entry_username = lookup_widget(login_window, "entryiduser");
+    GtkWidget *entry_password = lookup_widget(login_window, "entrypassworduser");
+    
+    if (!entry_username || !entry_password) {
+        printf("ERROR: Login fields not found!\n");
+        return;
+    }
+    
+    // Get the text from entries
+    const char *username = gtk_entry_get_text(GTK_ENTRY(entry_username));
+    const char *password = gtk_entry_get_text(GTK_ENTRY(entry_password));
+    
+    printf("Username: '%s', Password: '%s'\n", username, password);
+    
+    // Check against all users
+    int authenticated = 0;
+    UserCredentials *matched_user = NULL;
+    
+    for (int i = 0; users[i].username != NULL; i++) {
+        if (strcmp(username, users[i].username) == 0 && 
+            strcmp(password, users[i].password) == 0) {
+            authenticated = 1;
+            matched_user = &users[i];
+            printf("Matched: %s - %s\n", username, users[i].description);
+            break;
+        }
+    }
+    
+    if (authenticated && matched_user) {
+        printf("SUCCESS: Opening %s window\n", matched_user->description);
+        
+        // Create the appropriate window
+        GtkWidget *target_window = matched_user->create_window_func();
+        
+        if (target_window) {
+            // Show the new window
+            gtk_widget_show_all(target_window);
+            
+            // Hide the login window
+            gtk_widget_hide(login_window);
+            
+            // Optional: Show welcome message
+            char welcome_msg[256];
+            snprintf(welcome_msg, sizeof(welcome_msg), 
+                    "Welcome %s!\n%s system opened successfully.", 
+                    username, matched_user->description);
+            
+            GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(target_window),
+                GTK_DIALOG_MODAL,
+                GTK_MESSAGE_INFO,
+                GTK_BUTTONS_OK,
+                "%s", welcome_msg);
+            gtk_dialog_run(GTK_DIALOG(dialog));
+            gtk_widget_destroy(dialog);
+            
+            printf("Window opened successfully\n");
+        } else {
+            printf("ERROR: Failed to create window\n");
+            GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(login_window),
+                GTK_DIALOG_MODAL,
+                GTK_MESSAGE_ERROR,
+                GTK_BUTTONS_OK,
+                "Error: Failed to open %s window!", matched_user->description);
+            gtk_dialog_run(GTK_DIALOG(dialog));
+            gtk_widget_destroy(dialog);
+        }
+    } else {
+        // Login failed
+        printf("FAILED: Invalid credentials\n");
+        
+        // Build helpful error message
+        char error_msg[512];
+        if (strcmp(username, "raedcoach") == 0) {
+            snprintf(error_msg, sizeof(error_msg),
+                "Wrong password for raedcoach!\n\n"
+                "Available passwords for raedcoach:\n"
+                "• raed123 - Manage Coach\n"
+                "• raed2025 - Reserve Material");
+        } else if (strcmp(username, "admin") == 0) {
+            snprintf(error_msg, sizeof(error_msg),
+                "Wrong password for admin!\n\n"
+                "Password: admin123");
+        } else if (strcmp(username, "trainer") == 0) {
+            snprintf(error_msg, sizeof(error_msg),
+                "Wrong password for trainer!\n\n"
+                "Password: trainer123");
+        } else {
+            // Unknown username
+            snprintf(error_msg, sizeof(error_msg),
+                "Invalid username!\n\n"
+                "Available users:\n"
+                "• raedcoach (raed123 / raed2025)\n"
+                "• admin (admin123)\n"
+                "• trainer (trainer123)");
+        }
+        
+        GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(login_window),
+            GTK_DIALOG_MODAL,
+            GTK_MESSAGE_ERROR,
+            GTK_BUTTONS_OK,
+            "%s", error_msg);
+        gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+    }
+    
+    printf("=== LOGIN PROCESS END ===\n\n");
+}
 
 // Fonction helper pour lire les données
 static size_t read_callback(void *ptr, size_t size, size_t nmemb, void *userp) {
@@ -2672,77 +2819,62 @@ void on_btn_select_trainer_clicked(GtkButton *button, gpointer user_data) {
 }
 
 // =========================================================
-// FONCTIONS POUR LE LOGIN
+// FONCTIONS POUR "REMEMBER ME" CHECKBOX
 // =========================================================
 
 void on_checkbtnrememberme_toggled(GtkToggleButton *togglebutton, gpointer user_data) {
     remember_me = gtk_toggle_button_get_active(togglebutton);
 }
 
-void on_buttonlogin_clicked(GtkButton *button, gpointer user_data)
+// =========================================================
+// GENERIC LOGOUT FUNCTION (used by all logout buttons)
+// =========================================================
+
+static void logout_to_login(GtkWidget *current_window)
 {
-    GtkWidget *entry_id, *entry_password;
-    const char *id, *password;
-
-    entry_id = lookup_widget(GTK_WIDGET(button), "entry_id");
-    entry_password = lookup_widget(GTK_WIDGET(button), "entry_password");
-
-    id = gtk_entry_get_text(GTK_ENTRY(entry_id));
-    password = gtk_entry_get_text(GTK_ENTRY(entry_password));
-
-    /* ===== TRAINER ===== */
-    if (strcmp(selected_role, "trainer") == 0)
-    {
-        if (check_trainer_credentials(id, password))
-        {
-            /* 🔐 mémoriser l'id */
-            strcpy(current_user_id, id);
-
-            /* 💾 sauvegarder login */
-            save_login(id, "trainer", password);
-
-            /* ➜ ouvrir fenêtre trainer */
-            GtkWidget *trainer = create_windowtrainer();
-            gtk_widget_show(trainer);
-
-            /* 🔔 popup historique si déjà connecté avant */
-            if (trainer_logged_before(id))
-            {
-                show_trainer_history(id);
-            }
-
-            /* ❌ fermer login */
-            GtkWidget *login_window = gtk_widget_get_toplevel(GTK_WIDGET(button));
-            gtk_widget_destroy(login_window);
-        }
-        else
-        {
-            show_error("Error: Invalid credentials for selected role!");
-        }
-    }
-
-    /* ===== ADMIN (pour info) ===== */
-    else if (strcmp(selected_role, "admin") == 0)
-    {
-        if (check_admin_credentials(id, password))
-        {
-            save_login(id, "admin", password);
-
-            GtkWidget *admin = create_windowadmin();
-            gtk_widget_show(admin);
-
-            GtkWidget *login_window = gtk_widget_get_toplevel(GTK_WIDGET(button));
-            gtk_widget_destroy(login_window);
-        }
-        else
-        {
-            show_error("Error: Invalid credentials for selected role!");
-        }
+    if (!current_window) return;
+    
+    // Clear authentication state
+    remember_me = 0;
+    memset(selected_role, 0, sizeof(selected_role));
+    memset(current_user_id, 0, sizeof(current_user_id));
+    
+    // Destroy current window
+    gtk_widget_destroy(current_window);
+    
+    // Show login window again
+    GtkWidget *login_window = create_login();
+    if (login_window) {
+        gtk_widget_show_all(login_window);
     }
 }
 
-void on_buttoncancel_clicked(GtkButton *button, gpointer user_data) {
-    gtk_main_quit();
+// =========================================================
+// FONCTIONS POUR LOGOUT
+// =========================================================
+
+void on_buttonlogoutadmin_clicked(GtkButton *button, gpointer user_data)
+{
+    GtkWidget *window = gtk_widget_get_toplevel(GTK_WIDGET(button));
+    logout_to_login(window);
+}
+
+void on_buttonlogouttrtainer_clicked(GtkButton *button, gpointer user_data)
+{
+    GtkWidget *window = gtk_widget_get_toplevel(GTK_WIDGET(button));
+    logout_to_login(window);
+}
+
+void on_logoutraed_manage_coach_clicked(GtkButton *button, gpointer user_data)
+{
+    GtkWidget *window = gtk_widget_get_toplevel(GTK_WIDGET(button));
+    logout_to_login(window);
+}
+
+void on_logoutraed_reserve_material_clicked(GtkButton *button, gpointer user_data)
+{
+    GtkWidget *window = gtk_widget_get_toplevel(GTK_WIDGET(button));
+    logout_to_login(window);
 }
 
 // =========================================================
@@ -3011,34 +3143,6 @@ void on_btn_Display_All_clicked(GtkButton *button, gpointer user_data) {
 }
 
 // =========================================================
-// FONCTIONS POUR LOGOUT
-// =========================================================
-
-void on_buttonlogoutadmin_clicked(GtkButton *button, gpointer user_data)
-{
-    GtkWidget *window = gtk_widget_get_toplevel(GTK_WIDGET(button));
-
-    remember_me = 0;
-    selected_role[0] = '\0';
-
- 
-
-    gtk_widget_destroy(window);
-}
-
-void on_buttonlogouttrtainer_clicked(GtkButton *button, gpointer user_data)
-{
-    GtkWidget *window = gtk_widget_get_toplevel(GTK_WIDGET(button));
-
-    remember_me = 0;
-    selected_role[0] = '\0';
-
-
-
-    gtk_widget_destroy(window);
-}
-
-// =========================================================
 // FONCTIONS POUR TREEVIEW ÉQUIPEMENTS
 // =========================================================
 
@@ -3202,4 +3306,12 @@ void on_treeviewafficherdispo_row_activated(GtkTreeView *treeview, GtkTreePath *
         
         g_free(id);
     }
+}
+
+// =========================================================
+// FONCTION POUR CANCEL BUTTON
+// =========================================================
+
+void on_buttoncancel_clicked(GtkButton *button, gpointer user_data) {
+    gtk_main_quit();
 }
