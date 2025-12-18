@@ -1,23 +1,7 @@
-ID Name Type Center Time Equipment Capacity
+10 box force Tunis 3 2 20
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-C001 Yoga Group Wellness 09:00 Mats 18
-C002 Cardio Group Fitness 10:30 Treadmills 11
-C003 Swimming Group Aquatic 14:00 Pool 5
-C004 Boxing Individual Martial 18:30 Bags 3
-C005 Zumba Group Dance 19:00 Stereo 24
+12 pilates relaxation Tunis 1 4 17
+13 dance fitness Ariana 1 4 10
+22 karate force Ariana 2 2 11
+23 karate force Tunis 2 2 15
+14 zumba fitness Tunis 3 4 13

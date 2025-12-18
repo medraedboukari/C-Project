@@ -437,7 +437,7 @@ Copyright (C) 2012 Free Software Foundation, Inc.
 This config.status script is free software; the Free Software Foundation
 gives unlimited permission to copy, distribute and modify it."
 
-ac_pwd='/home/medraedboukari/Desktop/project class/C-Project'
+ac_pwd='/home/yomna/Desktop/test2/C-Project'
 srcdir='.'
 INSTALL='/usr/bin/install -c'
 MKDIR_P='/bin/mkdir -p'
@@ -686,12 +686,12 @@ S["mkdir_p"]="$(MKDIR_P)"
 S["MKDIR_P"]="/bin/mkdir -p"
 S["INSTALL_STRIP_PROGRAM"]="$(install_sh) -c -s"
 S["STRIP"]=""
-S["install_sh"]="${SHELL} '/home/medraedboukari/Desktop/project class/C-Project/install-sh'"
-S["MAKEINFO"]="${SHELL} \"/home/medraedboukari/Desktop/project class/C-Project/missing\" makeinfo"
-S["AUTOHEADER"]="${SHELL} \"/home/medraedboukari/Desktop/project class/C-Project/missing\" autoheader"
-S["AUTOMAKE"]="${SHELL} \"/home/medraedboukari/Desktop/project class/C-Project/missing\" automake-1.15"
-S["AUTOCONF"]="${SHELL} \"/home/medraedboukari/Desktop/project class/C-Project/missing\" autoconf"
-S["ACLOCAL"]="${SHELL} \"/home/medraedboukari/Desktop/project class/C-Project/missing\" aclocal-1.15"
+S["install_sh"]="${SHELL} /home/yomna/Desktop/test2/C-Project/install-sh"
+S["MAKEINFO"]="${SHELL} /home/yomna/Desktop/test2/C-Project/missing makeinfo"
+S["AUTOHEADER"]="${SHELL} /home/yomna/Desktop/test2/C-Project/missing autoheader"
+S["AUTOMAKE"]="${SHELL} /home/yomna/Desktop/test2/C-Project/missing automake-1.15"
+S["AUTOCONF"]="${SHELL} /home/yomna/Desktop/test2/C-Project/missing autoconf"
+S["ACLOCAL"]="${SHELL} /home/yomna/Desktop/test2/C-Project/missing aclocal-1.15"
 S["VERSION"]="0.1"
 S["PACKAGE"]="project1"
 S["CYGPATH_W"]="echo"

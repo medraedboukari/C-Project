@@ -1236,7 +1236,7 @@ create_yassinerequestcoach (void)
   return yassinerequestcoach;
 }*/
 
-/*GtkWidget*
+GtkWidget*
 create_yomna_choose_course (void)
 {
   GtkWidget *yomna_choose_course;
@@ -1377,9 +1377,9 @@ create_yomna_choose_course (void)
   GLADE_HOOKUP_OBJECT (yomna_choose_course, label288, "label288");
 
   return yomna_choose_course;
-}*/
+}
 
-/*GtkWidget*
+GtkWidget*
 create_yomna_course_managment (void)
 {
   GtkWidget *yomna_course_managment;
@@ -1905,7 +1905,7 @@ create_yomna_course_managment (void)
   GLADE_HOOKUP_OBJECT (yomna_course_managment, radiobuttonbunchpress_y, "radiobuttonbunchpress_y");
 
   return yomna_course_managment;
-}*/
+}
 
 GtkWidget*
 create_windowadmin (void)

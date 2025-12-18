@@ -627,7 +627,7 @@ callbacks.o: callbacks.c /usr/include/stdc-predef.h \
  /usr/include/x86_64-linux-gnu/curl/curl.h \
  /usr/include/x86_64-linux-gnu/curl/urlapi.h \
  /usr/include/x86_64-linux-gnu/curl/typecheck-gcc.h callbacks.h \
- equipment.h coach.h interface.h support.h ../config.h \
+ equipment.h coach.h course.h interface.h support.h ../config.h \
  /usr/include/libintl.h /usr/include/locale.h \
  /usr/include/x86_64-linux-gnu/bits/locale.h
 
@@ -2028,6 +2028,8 @@ callbacks.h:
 equipment.h:
 
 coach.h:
+
+course.h:
 
 interface.h:
 

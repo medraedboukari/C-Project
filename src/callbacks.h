@@ -4,6 +4,7 @@
 #include <gtk/gtk.h>
 #include "equipment.h"
 #include "coach.h"
+#include "course.h"
 
 // =========================================================
 // VARIABLES GLOBALES
@@ -158,6 +159,29 @@ on_logoutraed_manage_coach_clicked     (GtkButton       *button,
 void
 on_logoutraed_reserve_material_clicked (GtkButton       *button,
                                         gpointer         user_data);
+
+/* Callbacks pour yomna_course_managment */
+void on_treeviewcourse_y_row_activated(GtkTreeView *treeview, GtkTreePath *path, GtkTreeViewColumn *column, gpointer user_data);
+void on_btsearch_y_clicked(GtkButton *button, gpointer user_data);
+void on_btdelete_y_clicked(GtkButton *button, gpointer user_data);
+void on_load_y_clicked(GtkButton *button, gpointer user_data);
+void on_btadd_y_clicked(GtkButton *button, gpointer user_data);
+void on_btmodify_y_clicked(GtkButton *button, gpointer user_data);
+void on_radiobuttonMorning_y_toggled(GtkToggleButton *togglebutton, gpointer user_data);
+void on_radiobuttonafternoon_y_toggled(GtkToggleButton *togglebutton, gpointer user_data);
+void on_radiobuttonnight_y_toggled(GtkToggleButton *togglebutton, gpointer user_data);
+void on_radiobuttonTreadmill_y_toggled(GtkToggleButton *togglebutton, gpointer user_data);
+void on_radiobuttonsquatmachine_y_toggled(GtkToggleButton *togglebutton, gpointer user_data);
+void on_radiobuttonNo_y_toggled(GtkToggleButton *togglebutton, gpointer user_data);
+void on_radiobuttonbunchpress_y_toggled(GtkToggleButton *togglebutton, gpointer user_data);
+
+/* Callbacks pour yomna_choose_course */
+void on_treeviewchoose_y_row_activated(GtkTreeView *treeview, GtkTreePath *path, GtkTreeViewColumn *column, gpointer user_data);
+void on_btchoose_y_clicked(GtkButton *button, gpointer user_data);
+void on_loadcourses_y_clicked(GtkButton *button, gpointer user_data);
+void load_courses_to_treeview(GtkTreeView *treeview, const char *filename);
+
+
 
 #endif // CALLBACKS_H
 

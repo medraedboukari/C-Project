@@ -101,7 +101,7 @@ am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_project1_OBJECTS = main.$(OBJEXT) support.$(OBJEXT) \
 	interface.$(OBJEXT) callbacks.$(OBJEXT) coach.$(OBJEXT) \
-	equipment.$(OBJEXT)
+	equipment.$(OBJEXT) course.$(OBJEXT)
 project1_OBJECTS = $(am_project1_OBJECTS)
 am__DEPENDENCIES_1 =
 project1_DEPENDENCIES = $(am__DEPENDENCIES_1)
@@ -284,7 +284,8 @@ project1_SOURCES = \
 	interface.c interface.h \
 	callbacks.c callbacks.h \
         coach.c     coach.h \
-        equipment.c equipment.h
+        equipment.c equipment.h\
+        course.c    course.h
 
 project1_LDADD = @PACKAGE_LIBS@ $(INTLLIBS) -lcurl
 all: all-am
@@ -375,6 +376,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/callbacks.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/coach.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/course.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/equipment.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/interface.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
